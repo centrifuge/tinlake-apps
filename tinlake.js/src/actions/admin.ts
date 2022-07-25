@@ -216,7 +216,7 @@ export function AdminActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
       const maxWriteOffGroups = 100
       while (i < maxWriteOffGroups) {
         try {
-          const group = await navFeed.writeOffGroups(i)
+          const group = await navFeed.writeOffs(i)
           groups.push(group)
           i += 1
         } catch (e) {

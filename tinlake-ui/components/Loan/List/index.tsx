@@ -12,6 +12,7 @@ import { hexToInt } from '../../../utils/etherscanLinkGenerator'
 import { saveAsCSV } from '../../../utils/export'
 import { SortableLoan } from '../../../utils/useAssets'
 import { useMedia } from '../../../utils/useMedia'
+import { calculateWriteOffPercentage } from '../../../utils/useWriteOffPercentage'
 import { ButtonGroup } from '../../ButtonGroup'
 import { Card } from '../../Card'
 import ChevronRight from '../../ChevronRight'
@@ -28,6 +29,25 @@ interface Props {
 const LoanList: React.FC<Props> = (props: Props) => {
   const router = useRouter()
   const { showExport } = useDebugFlags()
+
+  const loansWithStatus = React.useMemo(() => {
+    if (props.loans.length) {
+      return props.loans.map((loan) => {
+        const writeOffPercentage = calculateWriteOffPercentage(
+          // @ts-expect-error
+          loan.borrowsAggregatedAmount,
+          loan.repaysAggregatedAmount
+        )
+
+        return {
+          ...loan,
+          status: writeOffPercentage === 100 ? 'repaid' : loan.status,
+        }
+      })
+    }
+
+    return []
+  }, [props.loans])
 
   const clickRow = React.useCallback(
     ({ datum }: { datum?: SortableLoan; index?: number }) => {
@@ -189,10 +209,10 @@ const LoanList: React.FC<Props> = (props: Props) => {
   return (
     <>
       <StyledCard bleedX={['12px', 0]} width="auto" pt="xsmall" mb="medium" borderRadius={[0, '8px']}>
-        {props.loans.length > 0 ? (
+        {loansWithStatus.length > 0 ? (
           <DataTable
             style={{ tableLayout: 'auto' }}
-            data={props.loans}
+            data={loansWithStatus}
             sort={{ direction: 'desc', property: 'loanId' }}
             pad="xsmall"
             sortable
@@ -207,7 +227,7 @@ const LoanList: React.FC<Props> = (props: Props) => {
       </StyledCard>
       {showExport && (
         <ButtonGroup>
-          <ExportLink onClick={() => saveAsCSV(props.loans)}>Export Asset List as CSV</ExportLink>
+          <ExportLink onClick={() => saveAsCSV(loansWithStatus)}>Export Asset List as CSV</ExportLink>
         </ButtonGroup>
       )}
     </>
