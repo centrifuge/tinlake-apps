@@ -1,7 +1,7 @@
-import { AddressStatus, KycStatusLabel } from '@centrifuge/onboarding-api/src/controllers/types'
 import { Anchor } from 'grommet'
 import * as React from 'react'
 import config from '../../config'
+import { AddressStatus, KycStatusLabel } from '../../types'
 import { Button } from '../Button'
 import { Step, StepProps } from './Step'
 import { StepParagraph } from './StepParagraph'
@@ -15,7 +15,11 @@ interface Props {
 }
 
 // TODO: Redirect to onboard API URL that isn't pool dependant
-const placeholderPoolId = '0x560Ac248ce28972083B718778EEb0dbC2DE55740'
+const placeholderPoolId =
+  process.env.PUBLIC_ENV === 'PROD'
+    ? '0x560Ac248ce28972083B718778EEb0dbC2DE55740'
+    : '0x1f4155D64D75555B9B36E4514C0FCC11313d5A54'
+
 const onboardURL = `${config.onboardAPIHost}pools/${placeholderPoolId}/info-redirect`
 
 const KycStep: React.FC<Props> = ({ state, onboardingData, kycStatus, accreditationStatus, agreementStatus }) => {
