@@ -1,0 +1,29 @@
+.next
+.idea/
+.vscode
+.DS_Store
+node_modules
+out
+services/tinlake/addresses_tinlake.json
+nft_data_definition.json
+functions
+dist
+
+# Local Netlify folder
+.netlify
+
+# Yarn
+yarn-error.log
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# Environment files
+.env*.local
+.env*
+!.env.example
+!.env.kovan-example
+!.env.goerli-example
+!.env.mainnet-example
