@@ -35,7 +35,7 @@ const AlertContainer = styled(Box)<{ type: 'error' | 'info' | 'success' }>`
   padding: 24px;
   background-color: ${(p) => colors[p.type].backgroundColor};
   color: ${(p) => colors[p.type].color};
-  border-radius: 8px;
+  border-radius: 10px;
 `
 
 export default Alert
