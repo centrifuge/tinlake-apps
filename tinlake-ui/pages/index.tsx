@@ -15,6 +15,7 @@ interface Props {
 }
 
 const Home: React.FC<Props> = (props: Props) => {
+  console.log('🚀 ~ ipfsPools', props)
   return (
     <IpfsPoolsProvider value={props.ipfsPools}>
       <TinlakeProvider>
