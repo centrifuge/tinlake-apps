@@ -1,5 +1,0 @@
-[build]
-  base = "fabric"
-  command = "yarn build-storybook"
-  publish = "storybook-static"
-  environment = { NETLIFY_USE_YARN = "true" }

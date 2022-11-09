@@ -1,5 +1,0 @@
-{
-  "path": ".",
-  "tag-prefix": "centrifuge-react/v",
-  "releaseCommitMessageFormat": "chore(release): centrifuge-react@{{currentTag}}"
-}

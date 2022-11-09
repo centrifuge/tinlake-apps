@@ -1,23 +1,17 @@
 {
   "private": true,
   "workspaces": [
-    "fabric",
     "tinlake-bot",
     "e2e-tests",
     "onboarding-api",
     "onboarding-app",
     "tinlake-ui",
     "tinlake.js",
-    "centrifuge-js",
-    "centrifuge-app",
-    "centrifuge-react",
     "gateway",
     "gateway/packages/lib",
     "gateway/packages/ui",
     "gateway/packages/server",
-    "simulation-tests",
-    "onboarding-ui",
-    "faucet-api"
+    "onboarding-ui"
   ],
   "devDependencies": {
     "@types/concurrently": "^5",
