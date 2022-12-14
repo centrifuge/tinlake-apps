@@ -229,11 +229,6 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
       returns: [[`junior.decimals`]],
     },
     {
-      target: pool.addresses.FEED,
-      call: ['discountRate()(uint256)'],
-      returns: [[`discountRate`, toBN]],
-    },
-    {
       target: pool.addresses.COORDINATOR,
       call: ['poolClosing()(bool)'],
       returns: [[`poolClosing`]],
@@ -263,28 +258,38 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
           [`risk[${i}].rate.lastUpdated`, toBN],
           [`risk[${i}].rate.fixedRate`, toBN],
         ],
-      },
-      {
-        target: pool.addresses.FEED,
-        call: ['recoveryRatePD(uint256)(uint256)', i],
-        returns: [[`risk[${i}].recoveryRatePD`, toBN]],
       }
     )
   }
 
-  if (pool.versions?.POOL_ADMIN && pool.versions?.POOL_ADMIN >= 2) {
+  if (pool.versions?.FEED && pool.versions?.FEED <= 2) {
+    // FEED version 3 (PV version) does not have a discount rate, nor write-off groups
+    calls.push({
+      target: pool.addresses.FEED,
+      call: ['discountRate()(uint256)'],
+      returns: [[`discountRate`, toBN]],
+    })
+
     const maxWriteOffGroups = 0
     for (let i = 0; i < maxWriteOffGroups; i += 1) {
       calls.push({
         target: pool.addresses.FEED,
-        call: ['writeOffGroups(uint256)(uint128,uint128)', i],
-        returns: [
-          [`writeOffGroups[${i}].percentage`, toBN],
-          [`writeOffGroups[${i}].overdueDays`, toBN],
-        ],
+        call: ['recoveryRatePD(uint256)(uint256)', i],
+        returns: [[`risk[${i}].recoveryRatePD`, toBN]],
       })
 
-      // TODO: load for v1 NAV feed, which doesn't have the overdueDays prop
+      if (pool.versions?.POOL_ADMIN && pool.versions?.POOL_ADMIN >= 2) {
+        calls.push({
+          target: pool.addresses.FEED,
+          call: ['writeOffGroups(uint256)(uint128,uint128)', i],
+          returns: [
+            [`writeOffGroups[${i}].percentage`, toBN],
+            [`writeOffGroups[${i}].overdueDays`, toBN],
+          ],
+        })
+
+        // TODO: load for v1 NAV feed, which doesn't have the overdueDays prop
+      }
     }
   }
 
