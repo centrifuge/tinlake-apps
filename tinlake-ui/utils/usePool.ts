@@ -262,7 +262,7 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
     )
   }
 
-  if (pool.versions?.FEED && pool.versions?.FEED <= 2) {
+  if (pool?.versions?.FEED === undefined || pool?.versions?.FEED <= 2) {
     // FEED version 3 (PV version) does not have a discount rate, nor write-off groups
     calls.push({
       target: pool.addresses.FEED,
@@ -270,15 +270,18 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
       returns: [[`discountRate`, toBN]],
     })
 
-    const maxWriteOffGroups = 0
-    for (let i = 0; i < maxWriteOffGroups; i += 1) {
+    const maxRiskGroups = 100
+    for (let i = 0; i < maxRiskGroups; i += 1) {
       calls.push({
         target: pool.addresses.FEED,
         call: ['recoveryRatePD(uint256)(uint256)', i],
         returns: [[`risk[${i}].recoveryRatePD`, toBN]],
       })
+    }
 
-      if (pool.versions?.POOL_ADMIN && pool.versions?.POOL_ADMIN >= 2) {
+    const maxWriteOffGroups = 0
+    for (let i = 0; i < maxWriteOffGroups; i += 1) {
+      if (pool?.versions?.POOL_ADMIN === undefined || pool.versions?.POOL_ADMIN <= 2) {
         calls.push({
           target: pool.addresses.FEED,
           call: ['writeOffGroups(uint256)(uint128,uint128)', i],
