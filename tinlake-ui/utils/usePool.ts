@@ -258,11 +258,6 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
           [`risk[${i}].rate.lastUpdated`, toBN],
           [`risk[${i}].rate.fixedRate`, toBN],
         ],
-      },
-      {
-        target: pool.addresses.FEED,
-        call: ['recoveryRatePD(uint256)(uint256)', i],
-        returns: [[`risk[${i}].recoveryRatePD`, toBN]],
       }
     )
   }
@@ -274,6 +269,15 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
       call: ['discountRate()(uint256)'],
       returns: [[`discountRate`, toBN]],
     })
+
+    const maxRiskGroups = 100
+    for (let i = 0; i < maxRiskGroups; i += 1) {
+      calls.push({
+        target: pool.addresses.FEED,
+        call: ['recoveryRatePD(uint256)(uint256)', i],
+        returns: [[`risk[${i}].recoveryRatePD`, toBN]],
+      })
+    }
 
     const maxWriteOffGroups = 0
     for (let i = 0; i < maxWriteOffGroups; i += 1) {
