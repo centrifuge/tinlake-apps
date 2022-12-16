@@ -498,6 +498,16 @@ export async function executeEpoch(tinlake: ITinlake): Promise<PendingTransactio
   return tinlake.executeEpoch()
 }
 
+export async function proxyBorrowerMintIssuePrice(
+  tinlake: ITinlake,
+  minterAddress: string,
+  nftRegistryAddress: string,
+  price: string,
+  riskGroup: string
+): Promise<PendingTransaction> {
+  return tinlake.proxyBorrowerMintIssuePrice(minterAddress, nftRegistryAddress, price, riskGroup)
+}
+
 export async function proxyTransferCurrency(
   tinlake: ITinlake,
   proxy: string,

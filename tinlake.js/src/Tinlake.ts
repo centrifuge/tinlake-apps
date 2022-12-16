@@ -31,6 +31,9 @@ const contractNames = [
   'POOL_ADMIN',
   'CLAIM_CFG',
   'CLERK',
+  'BORROWER_PROXY',
+  'NFT_REGISTRY',
+  'NFT_MINTER',
 ] as const
 
 export type PendingTransaction = {
@@ -216,7 +219,9 @@ export default class Tinlake {
     }
   }
 
-  async getTransactionReceipt(tx: PendingTransaction): Promise<ethers.providers.TransactionReceipt> {
+  async getTransactionReceipt(
+    tx: Pick<PendingTransaction, 'hash' | 'timesOutAt'>
+  ): Promise<ethers.providers.TransactionReceipt> {
     return new Promise(async (resolve, reject) => {
       if (!tx.hash) return reject(tx)
 

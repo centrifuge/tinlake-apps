@@ -79,6 +79,25 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
       )
     }
 
+    proxyBorrowerMintIssuePrice = async (
+      minterAddress: string,
+      nftRegistryAddress: string,
+      price: string,
+      riskGroup: string
+    ) => {
+      const proxy = this.contract('BORROWER_PROXY')
+      const encoded = this.contract('ACTIONS').interface.encodeFunctionData('mintIssuePriceLock', [
+        minterAddress,
+        nftRegistryAddress,
+        price,
+        riskGroup,
+      ])
+
+      return this.pending(
+        proxy.userExecute(this.contract('ACTIONS').address, encoded, { ...this.overrides, gasLimit: 1500000 })
+      )
+    }
+
     proxyTransferIssue = async (proxyAddress: string, nftRegistryAddress: string, tokenId: string) => {
       const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('transferIssue', [
@@ -197,6 +216,12 @@ export type IProxyActions = {
   getProxyOwnerByAddress(proxyAddr: string): Promise<string>
   proxyCreateNew(address: string): Promise<string>
   proxyIssue(proxyAddr: string, nftRegistryAddr: string, tokenId: string): Promise<PendingTransaction>
+  proxyBorrowerMintIssuePrice(
+    minterAddress: string,
+    nftRegistryAddress: string,
+    price: string,
+    riskGroup: string
+  ): Promise<PendingTransaction>
   proxyTransferIssue(proxyAddr: string, nftRegistryAddr: string, tokenId: string): Promise<PendingTransaction>
   proxyLockBorrowWithdraw(proxyAddr: string, loanId: string, amount: string, usr: string): Promise<PendingTransaction>
   proxyRepay(proxyAddress: string, loanId: string, amount: string): Promise<PendingTransaction>

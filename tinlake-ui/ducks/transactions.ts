@@ -29,7 +29,7 @@ export interface TransactionProps {
     description: string,
     actionName: A,
     args: Parameters<typeof actions[A]>
-  ) => Promise<string>
+  ) => string
 }
 
 // Actions
@@ -54,6 +54,7 @@ export interface Transaction {
   description: string
   actionName: TransactionAction
   actionArgs: any[]
+  logs?: ethers.providers.Log[]
   hash?: string
   status: TransactionStatus
   result?: any
@@ -113,8 +114,8 @@ export function createTransaction<A extends TransactionAction>(
   description: string,
   actionName: A,
   args: Parameters<typeof actions[A]>
-): ThunkAction<Promise<string>, { transactions: TransactionState }, undefined, Action> {
-  return async (dispatch) => {
+): ThunkAction<string, { transactions: TransactionState }, undefined, Action> {
+  return (dispatch) => {
     // Generate a unique id
     const id: TransactionId = (new Date().getTime() + Math.floor(Math.random() * 1000000)).toString()
 
@@ -194,6 +195,7 @@ function processTransaction(
         outcomeTx.status = outcome ? 'succeeded' : 'failed'
         outcomeTx.result = receipt
         outcomeTx.hash = receipt.transactionHash
+        outcomeTx.logs = receipt.logs
 
         if (config.enableErrorLogging && outcomeTx.status === 'failed') {
           Sentry.captureMessage(`Transaction failed: ${unconfirmedTx.actionName}`, { extra: { tx: outcomeTx } })
@@ -283,11 +285,16 @@ export function getTransaction(state?: TransactionState, txId?: TransactionId): 
 }
 
 // Hooks
-export const useTransactionState = (): [TransactionStatus | undefined, any, (txId: TransactionId) => void] => {
+export const useTransactionState = (): [
+  TransactionStatus | undefined,
+  any,
+  (txId: TransactionId) => void,
+  Transaction | undefined
+] => {
   const [txId, setTxId] = React.useState<TransactionId | undefined>(undefined)
 
   const tx = useSelector<{ transactions: TransactionState }, Transaction | undefined>((state) =>
     txId ? state.transactions.active[txId] : undefined
   )
-  return [tx?.status, tx?.result, setTxId]
+  return [tx?.status, tx?.result, setTxId, tx]
 }

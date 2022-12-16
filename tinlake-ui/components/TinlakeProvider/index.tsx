@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from 'react'
+import * as React from 'react'
 import { ContractAddresses, ContractVersions, ITinlake } from '../../../tinlake.js/dist'
 import { initTinlake } from '../../services/tinlake'
 
@@ -11,12 +11,16 @@ interface TinlakeProviderProps {
   contractVersions?: ContractVersions
 }
 
-const TinlakeContext = createContext<ITinlake | null>(null)
+const TinlakeContext = React.createContext<ITinlake | null>(null)
 
 export const useTinlake = (): ITinlake => {
-  const ctx = useContext(TinlakeContext)
+  const ctx = React.useContext(TinlakeContext)
   if (!ctx) throw new Error('useTinlake must be used within TinlakeProvider')
   return ctx
+}
+
+export const TinlakeConsumer: React.FC<{ children: (tinlake: ITinlake) => React.ReactElement }> = ({ children }) => {
+  return children(useTinlake())
 }
 
 export const TinlakeProvider: React.FC<TinlakeProviderProps> = ({
@@ -25,7 +29,7 @@ export const TinlakeProvider: React.FC<TinlakeProviderProps> = ({
   contractConfig,
   contractVersions,
 }) => {
-  const tinlake = useMemo(
+  const tinlake = React.useMemo(
     () => initTinlake({ addresses, contractConfig, contractVersions }),
     [addresses, contractConfig, contractVersions]
   )
