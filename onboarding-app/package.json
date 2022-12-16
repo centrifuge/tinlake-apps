@@ -18,6 +18,7 @@
     "@centrifuge/axis-theme": "0.4.2-develop.c4f03d8.139+c4f03d8",
     "@centrifuge/axis-utils": "0.4.2-develop.109",
     "@centrifuge/tinlake-js": "workspace:*",
+    "@polkadot/extension-dapp": "^0.44.6",
     "@styled-system/css": "^5.1.5",
     "@styled-system/should-forward-prop": "^5.1.5",
     "csstype": "^3.1.1",
