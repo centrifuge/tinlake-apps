@@ -132,14 +132,16 @@ const LoanData: React.FC<Props> = (props: Props) => {
                       </LoadingValue>
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell scope="row">Maturity date</TableCell>
-                    <TableCell style={{ textAlign: 'end' }}>
-                      <LoadingValue done={props.loan?.nft?.maturityDate !== undefined}>
-                        {dateToYMD(props.loan?.nft?.maturityDate || 0)}
-                      </LoadingValue>
-                    </TableCell>
-                  </TableRow>
+                  {props.loan?.nft?.maturityDate === 0 ? null : (
+                    <TableRow>
+                      <TableCell scope="row">Maturity date</TableCell>
+                      <TableCell style={{ textAlign: 'end' }}>
+                        <LoadingValue done={props.loan?.nft?.maturityDate !== undefined}>
+                          {dateToYMD(props.loan?.nft?.maturityDate || 0)}
+                        </LoadingValue>
+                      </TableCell>
+                    </TableRow>
+                  )}
                   <TableRow>
                     <TableCell scope="row" border={{ color: 'transparent' }}>
                       Financed by

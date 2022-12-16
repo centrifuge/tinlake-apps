@@ -156,7 +156,7 @@ const Risk: React.FC<Props> = (props: Props) => {
                 <TableCell>
                   {toPrecision(
                     parseFloat(
-                      Fixed27Base.sub(riskGroup.recoveryRatePD)
+                      Fixed27Base.sub(riskGroup.recoveryRatePD ?? new BN(0))
                         .div(new BN(10).pow(new BN(22)))
                         .toString()
                     ) / 1000,
