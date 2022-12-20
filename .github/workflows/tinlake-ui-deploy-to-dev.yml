@@ -7,6 +7,9 @@ on:
       - 'tinlake-ui/**'
       - '.github/workflows/tinlake-ui-deploy-to-dev.yml'
 
+permissions:
+   contents: write
+
 jobs:
   build-and-deploy-to-goerli:
     runs-on: ubuntu-latest

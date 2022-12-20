@@ -4,6 +4,9 @@ on:
     tags:
       - tinlake-ui/release-*
 
+permissions:
+   contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
