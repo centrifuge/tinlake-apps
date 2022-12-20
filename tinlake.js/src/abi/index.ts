@@ -59,6 +59,6 @@ export default {
   FEED_V3: contractAbiNavFeed_V3,
   POOL_ADMIN_V2: contractAbiPoolAdmin,
   BORROWER_PROXY: contractAbiBorrowerProxy,
-  NFT_REGISTRY: contractAbiNFTRegistry,
+  ASSET_NFT: contractAbiNFTRegistry,
   MINTER: contractAbiNFTMinter,
 } as ContractAbis

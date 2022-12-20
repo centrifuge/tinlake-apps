@@ -32,7 +32,7 @@ const contractNames = [
   'CLAIM_CFG',
   'CLERK',
   'BORROWER_PROXY',
-  'NFT_REGISTRY',
+  'ASSET_NFT',
   'MINTER',
 ] as const
 

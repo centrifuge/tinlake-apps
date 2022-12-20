@@ -50,7 +50,7 @@ const CreateNFT: React.FC = () => {
       createTransaction(`Mint NFT...`, 'proxyBorrowerMintIssuePrice', [
         tinlake,
         tinlake.contractAddresses.MINTER!,
-        tinlake.contractAddresses.NFT_REGISTRY!,
+        tinlake.contractAddresses.ASSET_NFT!,
         value,
         riskGroup,
       ])
