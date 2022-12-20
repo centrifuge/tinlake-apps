@@ -60,5 +60,5 @@ export default {
   POOL_ADMIN_V2: contractAbiPoolAdmin,
   BORROWER_PROXY: contractAbiBorrowerProxy,
   NFT_REGISTRY: contractAbiNFTRegistry,
-  NFT_MINTER: contractAbiNFTMinter,
+  MINTER: contractAbiNFTMinter,
 } as ContractAbis

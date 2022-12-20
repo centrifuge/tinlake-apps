@@ -33,7 +33,7 @@ const contractNames = [
   'CLERK',
   'BORROWER_PROXY',
   'NFT_REGISTRY',
-  'NFT_MINTER',
+  'MINTER',
 ] as const
 
 export type PendingTransaction = {

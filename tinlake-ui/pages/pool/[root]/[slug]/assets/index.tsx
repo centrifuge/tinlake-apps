@@ -59,7 +59,7 @@ const LoanListPage: React.FC<Props> = (props) => {
                     <TinlakeConsumer>
                       {(tinlake) => (
                         <Box display={['none', 'block']}>
-                          {tinlake.contractAddresses.NFT_MINTER && tinlake.contractAddresses.BORROWER_PROXY ? (
+                          {tinlake.contractAddresses.MINTER && tinlake.contractAddresses.BORROWER_PROXY ? (
                             <PoolLink href={'/assets/create-nft'}>
                               <Button primary label="Create NFT" />
                             </PoolLink>
