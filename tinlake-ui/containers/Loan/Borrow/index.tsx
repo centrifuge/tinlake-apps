@@ -44,6 +44,11 @@ const LoanBorrow: React.FC<Props> = (props: Props) => {
         ? 'borrowWithdraw'
         : 'lockBorrowWithdraw'
 
+    console.log('action', action)
+    console.log(tinlake)
+    console.log(props.loan)
+    console.log(borrowAmount)
+
     const txId = await props.createTransaction(
       `Finance Asset ${props.loan.loanId} (${formatted} ${props.poolConfig.metadata.currencySymbol || 'DAI'})`,
       action,
