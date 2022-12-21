@@ -51,10 +51,14 @@ const OverviewHeader: React.FC<Props> = (props: Props) => {
       : undefined
 
   const makerDropShare =
-    isMakerIntegrated && poolData?.maker && poolData?.maker?.dropBalance && poolData.senior
-      ? poolData?.maker?.dropBalance
+    isMakerIntegrated &&
+    poolData?.maker &&
+    poolData?.maker?.dropBalance &&
+    poolData.senior &&
+    poolData?.senior?.totalSupply?.gtn(0)
+      ? poolData.maker.dropBalance
           .mul(new BN(10).pow(new BN(18)))
-          .div(poolData?.senior?.totalSupply)
+          .div(poolData.senior.totalSupply)
           .div(new BN(10).pow(new BN(16)))
       : undefined
 
