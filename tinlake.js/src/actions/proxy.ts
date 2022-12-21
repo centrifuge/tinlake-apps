@@ -121,14 +121,17 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
 
       if (this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
-          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 2500000,
+          })
         )
       }
 
       return this.pending(
         this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, {
           ...this.overrides,
-          gasLimit: 1500000,
+          gasLimit: 2500000,
         })
       )
     }
@@ -153,12 +156,18 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
 
       if (this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
-          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 2500000,
+          })
         )
       }
 
       return this.pending(
-        this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, this.overrides)
+        this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, {
+          ...this.overrides,
+          gasLimit: 2500000,
+        })
       )
     }
 
@@ -172,7 +181,10 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
 
       if (this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
-          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 1000000,
+          })
         )
       }
 
@@ -192,7 +204,10 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
 
       if (this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
-          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 550000,
+          })
         )
       }
 
@@ -216,7 +231,10 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
 
       if (this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
-          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 1500000,
+          })
         )
       }
 
