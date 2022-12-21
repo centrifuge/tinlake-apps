@@ -604,11 +604,6 @@ export async function borrowWithdraw(tinlake: ITinlake, loan: Asset, amount: str
     return loggedError({}, 'There is not enough available funds.', loanId)
   }
 
-  console.log('proxy', proxy.toString())
-  console.log('loanId', loanId.toString())
-  console.log('amount', amount.toString())
-  console.log('address', address.toString())
-
   // borrow with proxy
   return tinlake.proxyBorrowWithdraw(proxy.toString(), loanId, amount, address!)
 }

@@ -230,7 +230,6 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
 
     proxyTransferCurrency = async (proxyAddress: string, borrowerAddress: string) => {
       const proxyBalance = await this.contract('TINLAKE_CURRENCY').balanceOf(proxyAddress)
-      console.log(proxyBalance)
       const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('transferERC20', [
         this.contract('TINLAKE_CURRENCY').address,
