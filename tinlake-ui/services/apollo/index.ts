@@ -521,7 +521,7 @@ class Apollo {
       return null
     }
 
-    return result.data.proxies.length > 0 ? result.data.proxies[0] : null
+    return result.data?.proxies.length > 0 ? result.data.proxies[0] : null
   }
 
   async runCustomQuery(query: DocumentNode) {

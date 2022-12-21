@@ -155,7 +155,7 @@ export function AdminActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
     }
 
     getNftMaturityDate = async (nftId: string) => {
-      return await this.toBN(this.contract('FEED').maturityDate(nftId))
+      return await this.toBN(this.contract('FEED').maturityDate?.(nftId) ?? 0)
     }
 
     setDiscountRate = async (rate: string) => {

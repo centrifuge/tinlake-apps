@@ -60,7 +60,10 @@ const LoanData: React.FC<Props> = (props: Props) => {
   const { showTransferCurrency } = useDebugFlags()
   const availableForFinancing = props.loan?.debt.isZero() ? props.loan?.principal || new BN(0) : new BN(0)
 
-  const { data: loanData } = useLoan(props.poolConfig.addresses.ROOT_CONTRACT, Number(props.loan?.loanId))
+  const { data: loanData, isLoading: isLoanDataLoading } = useLoan(
+    props.poolConfig.addresses.ROOT_CONTRACT,
+    Number(props.loan?.loanId)
+  )
 
   const { data: writeOffPercentageData } = useWriteOffPercentage(
     props.poolConfig.addresses.ROOT_CONTRACT,
@@ -132,14 +135,16 @@ const LoanData: React.FC<Props> = (props: Props) => {
                       </LoadingValue>
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell scope="row">Maturity date</TableCell>
-                    <TableCell style={{ textAlign: 'end' }}>
-                      <LoadingValue done={props.loan?.nft?.maturityDate !== undefined}>
-                        {dateToYMD(props.loan?.nft?.maturityDate || 0)}
-                      </LoadingValue>
-                    </TableCell>
-                  </TableRow>
+                  {props.loan?.nft?.maturityDate === 0 ? null : (
+                    <TableRow>
+                      <TableCell scope="row">Maturity date</TableCell>
+                      <TableCell style={{ textAlign: 'end' }}>
+                        <LoadingValue done={props.loan?.nft?.maturityDate !== undefined}>
+                          {dateToYMD(props.loan?.nft?.maturityDate || 0)}
+                        </LoadingValue>
+                      </TableCell>
+                    </TableRow>
+                  )}
                   <TableRow>
                     <TableCell scope="row" border={{ color: 'transparent' }}>
                       Financed by
@@ -180,7 +185,7 @@ const LoanData: React.FC<Props> = (props: Props) => {
                   <TableRow>
                     <TableCell scope="row">Total financed</TableCell>
                     <TableCell style={{ textAlign: 'end' }}>
-                      <LoadingValue done={loanData?.borrowsAggregatedAmount !== undefined}>
+                      <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
                           toPrecision(baseToDisplay(loanData?.borrowsAggregatedAmount || new BN(0), 18), 2)
                         )}{' '}
@@ -191,7 +196,7 @@ const LoanData: React.FC<Props> = (props: Props) => {
                   <TableRow>
                     <TableCell scope="row">Total repaid</TableCell>
                     <TableCell style={{ textAlign: 'end' }}>
-                      <LoadingValue done={loanData?.repaysAggregatedAmount !== undefined}>
+                      <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
                           toPrecision(baseToDisplay(loanData?.repaysAggregatedAmount || new BN(0), 18), 2)
                         )}{' '}
@@ -240,26 +245,28 @@ const LoanData: React.FC<Props> = (props: Props) => {
               </Table>
             </Box>
             <Divider display={{ medium: 'none' }} m={0} />
-            <Box maxWidth={{ medium: 360 }} flex="1">
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell scope="row">
-                      <Tooltip id="appliedRiskAdjustment" underline>
-                        Applied risk adjustment
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell style={{ textAlign: 'end' }}>
-                      <LoadingValue
-                        done={props.loan?.riskGroup !== undefined && riskGroup?.recoveryRatePD !== undefined}
-                      >
-                        {appliedRiskAdjustment} %
-                      </LoadingValue>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
+            {tinlake?.contractVersions['FEED'] && tinlake?.contractVersions['FEED'] <= 2 && (
+              <Box maxWidth={{ medium: 360 }} flex="1">
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell scope="row">
+                        <Tooltip id="appliedRiskAdjustment" underline>
+                          Applied risk adjustment
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'end' }}>
+                        <LoadingValue
+                          done={props.loan?.riskGroup !== undefined && riskGroup?.recoveryRatePD !== undefined}
+                        >
+                          {appliedRiskAdjustment} %
+                        </LoadingValue>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Box>
+            )}
           </Flex>
         </Stack>
       </Card>

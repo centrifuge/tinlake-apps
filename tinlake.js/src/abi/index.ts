@@ -2,6 +2,7 @@ import { ContractAbis } from '../Tinlake'
 import contractAbiActions from './Actions.abi.json'
 import contractAbiAssessor from './Assessor.abi.json'
 import contractAbiAssessorAdmin from './AssessorAdmin.abi.json'
+import contractAbiBorrowerProxy from './BorrowerProxy.abi.json'
 import contractAbiClaimCFG from './ClaimCFG.abi.json'
 import contractAbiCollector from './Collector.abi.json'
 import contractAbiDistributor from './Distributor.abi.json'
@@ -10,6 +11,8 @@ import contractAbiMemberlist from './Memberlist.abi.json'
 import contractAbiNavFeed from './NAVFeed.abi.json'
 import contractAbiNavFeed_V2 from './NAVFeed_V2.abi.json'
 import contractAbiNavFeed_V3 from './NAVFeed_V3.abi.json'
+import contractAbiNFTMinter from './NFTMinter.abi.json'
+import contractAbiNFTRegistry from './NFTRegistry.abi.json'
 import contractAbiOperator from './Operator.abi.json'
 import contractAbiPile from './Pile.abi.json'
 import contractAbiPoolAdmin from './PoolAdmin.abi.json'
@@ -55,4 +58,7 @@ export default {
   FEED_V2: contractAbiNavFeed_V2,
   FEED_V3: contractAbiNavFeed_V3,
   POOL_ADMIN_V2: contractAbiPoolAdmin,
+  BORROWER_PROXY: contractAbiBorrowerProxy,
+  ASSET_NFT: contractAbiNFTRegistry,
+  MINTER: contractAbiNFTMinter,
 } as ContractAbis

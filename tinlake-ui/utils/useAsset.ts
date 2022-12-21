@@ -109,14 +109,16 @@ async function getAsset(tinlake: ITinlake, loanId: string): Promise<Asset> {
       call: ['ceilingRatio(uint256)(uint256)', riskGroup],
       returns: [[`scoreCard.ceilingRatio`, toBN]],
     },
-    {
+  ]
+
+  if (tinlake?.contractVersions['FEED'] && tinlake?.contractVersions['FEED'] <= 2) {
+    calls.push({
       target: tinlake.contractAddresses.FEED!,
       call: ['recoveryRatePD(uint256)(uint256)', riskGroup],
       returns: [[`scoreCard.recoveryRatePD`, toBN]],
-    },
-  ]
-
-  if (tinlake.contractVersions['FEED'] === 2) {
+    })
+  }
+  if (tinlake?.contractVersions['FEED'] && tinlake?.contractVersions['FEED'] === 2) {
     calls.push({
       target: tinlake.contractAddresses.FEED!,
       call: ['currentValidWriteOffGroup(uint256)(uint256)', loanId],

@@ -79,6 +79,25 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
       )
     }
 
+    proxyBorrowerMintIssuePrice = async (
+      minterAddress: string,
+      nftRegistryAddress: string,
+      price: string,
+      riskGroup: string
+    ) => {
+      const proxy = this.contract('BORROWER_PROXY')
+      const encoded = this.contract('ACTIONS').interface.encodeFunctionData('mintIssuePriceLock', [
+        minterAddress,
+        nftRegistryAddress,
+        price,
+        riskGroup,
+      ])
+
+      return this.pending(
+        proxy.userExecute(this.contract('ACTIONS').address, encoded, { ...this.overrides, gasLimit: 1500000 })
+      )
+    }
+
     proxyTransferIssue = async (proxyAddress: string, nftRegistryAddress: string, tokenId: string) => {
       const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('transferIssue', [
@@ -93,7 +112,6 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
     }
 
     proxyLockBorrowWithdraw = async (proxyAddress: string, loanId: string, amount: string, usr: string) => {
-      const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('lockBorrowWithdraw', [
         this.contract('SHELF').address,
         loanId,
@@ -101,8 +119,17 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         usr,
       ])
 
+      if (this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+        )
+      }
+
       return this.pending(
-        proxy.execute(this.contract('ACTIONS').address, encoded, { ...this.overrides, gasLimit: 1500000 })
+        this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, {
+          ...this.overrides,
+          gasLimit: 1500000,
+        })
       )
     }
 
@@ -117,7 +144,6 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
     }
 
     proxyBorrowWithdraw = async (proxyAddress: string, loanId: string, amount: string, usr: string) => {
-      const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('borrowWithdraw', [
         this.contract('SHELF').address,
         loanId,
@@ -125,11 +151,18 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         usr,
       ])
 
-      return this.pending(proxy.execute(this.contract('ACTIONS').address, encoded, this.overrides))
+      if (this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+        )
+      }
+
+      return this.pending(
+        this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, this.overrides)
+      )
     }
 
     proxyRepay = async (proxyAddress: string, loanId: string, amount: string) => {
-      const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('repay', [
         this.contract('SHELF').address,
         this.contract('TINLAKE_CURRENCY').address,
@@ -137,25 +170,41 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         amount,
       ])
 
+      if (this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+        )
+      }
+
       return this.pending(
-        proxy.execute(this.contract('ACTIONS').address, encoded, { ...this.overrides, gasLimit: 1000000 })
+        this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, {
+          ...this.overrides,
+          gasLimit: 1000000,
+        })
       )
     }
 
     proxyClose = async (proxyAddress: string, loanId: string) => {
-      const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('close', [
         this.contract('SHELF').address,
         loanId,
       ])
 
+      if (this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+        )
+      }
+
       return this.pending(
-        proxy.execute(this.contract('ACTIONS').address, encoded, { ...this.overrides, gasLimit: 550000 })
+        this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, {
+          ...this.overrides,
+          gasLimit: 550000,
+        })
       )
     }
 
     proxyRepayUnlockClose = async (proxyAddress: string, tokenId: string, loanId: string, registry: string) => {
-      const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('repayUnlockClose', [
         this.contract('SHELF').address,
         this.contract('PILE').address,
@@ -165,14 +214,22 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         loanId,
       ])
 
+      if (this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, this.overrides)
+        )
+      }
+
       return this.pending(
-        proxy.execute(this.contract('ACTIONS').address, encoded, { ...this.overrides, gasLimit: 1500000 })
+        this.contract('PROXY', proxyAddress).execute(this.contract('ACTIONS').address, encoded, {
+          ...this.overrides,
+          gasLimit: 1500000,
+        })
       )
     }
 
     proxyTransferCurrency = async (proxyAddress: string, borrowerAddress: string) => {
       const proxyBalance = await this.contract('TINLAKE_CURRENCY').balanceOf(proxyAddress)
-      console.log(proxyBalance)
       const proxy = this.contract('PROXY', proxyAddress)
       const encoded = this.contract('ACTIONS').interface.encodeFunctionData('transferERC20', [
         this.contract('TINLAKE_CURRENCY').address,
@@ -197,6 +254,12 @@ export type IProxyActions = {
   getProxyOwnerByAddress(proxyAddr: string): Promise<string>
   proxyCreateNew(address: string): Promise<string>
   proxyIssue(proxyAddr: string, nftRegistryAddr: string, tokenId: string): Promise<PendingTransaction>
+  proxyBorrowerMintIssuePrice(
+    minterAddress: string,
+    nftRegistryAddress: string,
+    price: string,
+    riskGroup: string
+  ): Promise<PendingTransaction>
   proxyTransferIssue(proxyAddr: string, nftRegistryAddr: string, tokenId: string): Promise<PendingTransaction>
   proxyLockBorrowWithdraw(proxyAddr: string, loanId: string, amount: string, usr: string): Promise<PendingTransaction>
   proxyRepay(proxyAddress: string, loanId: string, amount: string): Promise<PendingTransaction>

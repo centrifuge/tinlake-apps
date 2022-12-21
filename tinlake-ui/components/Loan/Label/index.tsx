@@ -14,10 +14,11 @@ const LoanLabel: React.FC<Props> = ({ loan, dot }) => {
   const getLabelType = (l: MinimalAsset): LabelType => {
     const today = new Date()
     today.setUTCHours(0, 0, 0, 0)
-    const days = daysBetween(today.getTime() / 1000, Number(l.maturityDate))
+    const date = Number(l.maturityDate ?? 0)
+    const days = daysBetween(today.getTime() / 1000, date)
 
-    if (l.status === 'ongoing' && days >= 0 && days <= 5) return 'warning'
-    if (l.status === 'ongoing' && days < 0) return 'error'
+    if (l.status === 'ongoing' && date > 0 && days >= 0 && days <= 5) return 'warning'
+    if (l.status === 'ongoing' && date > 0 && days < 0) return 'error'
     if (l.status === 'closed') return 'info'
     if (l.status === 'NFT locked') return 'plain'
     return 'success'
@@ -26,8 +27,10 @@ const LoanLabel: React.FC<Props> = ({ loan, dot }) => {
   const getLabelText = (l: MinimalAsset) => {
     const today = new Date()
     today.setUTCHours(0, 0, 0, 0)
-    const days = daysBetween(today.getTime() / 1000, Number(l.maturityDate))
+    const date = Number(l.maturityDate ?? 0)
+    const days = daysBetween(today.getTime() / 1000, date)
 
+    if (l.status === 'ongoing' && date === 0) return 'ongoing'
     if (l.status === 'ongoing' && days === 0) return 'due today'
     if (l.status === 'ongoing' && days === 1) return 'due tomorrow'
     if (l.status === 'ongoing' && days > 1 && days <= 5) return `due in ${days} days`

@@ -13,7 +13,7 @@ import { PageContainer } from '../../../../../components/PageContainer'
 import PageTitle from '../../../../../components/PageTitle'
 import { PoolLink } from '../../../../../components/PoolLink'
 import Scorecard from '../../../../../components/Scorecard'
-import { TinlakeProvider } from '../../../../../components/TinlakeProvider'
+import { TinlakeConsumer, TinlakeProvider } from '../../../../../components/TinlakeProvider'
 import WithFooter from '../../../../../components/WithFooter'
 import { IpfsPools, loadPoolsFromIPFS, Pool } from '../../../../../config'
 import LoanList from '../../../../../containers/Loan/List'
@@ -56,11 +56,21 @@ const LoanListPage: React.FC<Props> = (props) => {
                 page="Assets"
                 rightContent={
                   isBorrower && (
-                    <Box display={['none', 'block']}>
-                      <PoolLink href={'/assets/issue'}>
-                        <Button primary label="Lock NFT" />
-                      </PoolLink>
-                    </Box>
+                    <TinlakeConsumer>
+                      {(tinlake) => (
+                        <Box display={['none', 'block']}>
+                          {tinlake.contractAddresses.MINTER && tinlake.contractAddresses.BORROWER_PROXY ? (
+                            <PoolLink href={'/assets/create-nft'}>
+                              <Button primary label="Create NFT" />
+                            </PoolLink>
+                          ) : (
+                            <PoolLink href={'/assets/issue'}>
+                              <Button primary label="Lock NFT" />
+                            </PoolLink>
+                          )}
+                        </Box>
+                      )}
+                    </TinlakeConsumer>
                   )
                 }
               />

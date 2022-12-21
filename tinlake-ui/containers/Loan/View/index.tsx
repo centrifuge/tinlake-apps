@@ -50,7 +50,8 @@ const LoanView: React.FC<Props> = (props: Props) => {
       auth?.proxies
         ?.map((proxy: string) => proxy.toLowerCase())
         .includes(assetData.ownerOf.toString().toLowerCase())) ||
-    showBorrower
+    showBorrower ||
+    (tinlake.contractAddresses.BORROWER_PROXY && poolData?.isPoolAdmin)
 
   return (
     <Stack gap="xlarge">
