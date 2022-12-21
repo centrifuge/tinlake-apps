@@ -60,7 +60,10 @@ const LoanData: React.FC<Props> = (props: Props) => {
   const { showTransferCurrency } = useDebugFlags()
   const availableForFinancing = props.loan?.debt.isZero() ? props.loan?.principal || new BN(0) : new BN(0)
 
-  const { data: loanData } = useLoan(props.poolConfig.addresses.ROOT_CONTRACT, Number(props.loan?.loanId))
+  const { data: loanData, isLoading: isLoanDataLoading } = useLoan(
+    props.poolConfig.addresses.ROOT_CONTRACT,
+    Number(props.loan?.loanId)
+  )
 
   const { data: writeOffPercentageData } = useWriteOffPercentage(
     props.poolConfig.addresses.ROOT_CONTRACT,
@@ -182,7 +185,7 @@ const LoanData: React.FC<Props> = (props: Props) => {
                   <TableRow>
                     <TableCell scope="row">Total financed</TableCell>
                     <TableCell style={{ textAlign: 'end' }}>
-                      <LoadingValue done={loanData?.borrowsAggregatedAmount !== undefined}>
+                      <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
                           toPrecision(baseToDisplay(loanData?.borrowsAggregatedAmount || new BN(0), 18), 2)
                         )}{' '}
@@ -193,7 +196,7 @@ const LoanData: React.FC<Props> = (props: Props) => {
                   <TableRow>
                     <TableCell scope="row">Total repaid</TableCell>
                     <TableCell style={{ textAlign: 'end' }}>
-                      <LoadingValue done={loanData?.repaysAggregatedAmount !== undefined}>
+                      <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
                           toPrecision(baseToDisplay(loanData?.repaysAggregatedAmount || new BN(0), 18), 2)
                         )}{' '}
