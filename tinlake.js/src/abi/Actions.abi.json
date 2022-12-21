@@ -1,5 +1,21 @@
 [
     {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "root_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "withdrawAddress_",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -149,6 +165,25 @@
             {
                 "indexed": true,
                 "internalType": "address",
+                "name": "registry",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "Minted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
                 "name": "shelf",
                 "type": "address"
             },
@@ -250,61 +285,10 @@
         "type": "event"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "erc20",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "usr",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "approveERC20",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "registry",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "usr",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "tokenAmount",
-                "type": "uint256"
-            }
-        ],
-        "name": "approveNFT",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -325,16 +309,14 @@
         ],
         "name": "borrowWithdraw",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -345,16 +327,27 @@
         ],
         "name": "close",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
+        "inputs": [],
+        "name": "feed",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -376,16 +369,14 @@
                 "type": "uint256"
             }
         ],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -396,16 +387,14 @@
         ],
         "name": "lock",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -426,16 +415,85 @@
         ],
         "name": "lockBorrowWithdraw",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "minter",
+                "type": "address"
+            }
+        ],
+        "name": "mintAsset",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "minter",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "registry",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "riskGroup",
+                "type": "uint256"
+            }
+        ],
+        "name": "mintIssuePriceLock",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "loan",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "pile",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -456,21 +514,19 @@
         ],
         "name": "repay",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
                 "internalType": "address",
-                "name": "pile",
+                "name": "pile_",
                 "type": "address"
             },
             {
@@ -486,21 +542,19 @@
         ],
         "name": "repayFullDebt",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
                 "internalType": "address",
-                "name": "pile",
+                "name": "pile_",
                 "type": "address"
             },
             {
@@ -526,12 +580,36 @@
         ],
         "name": "repayUnlockClose",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
+        "inputs": [],
+        "name": "self",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "shelf",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
@@ -546,41 +624,14 @@
         ],
         "name": "transfer",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "erc20",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "dst",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferERC20",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -602,16 +653,14 @@
                 "type": "uint256"
             }
         ],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -637,16 +686,14 @@
         ],
         "name": "transferIssueLockBorrowWithdraw",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "constant": false,
         "inputs": [
             {
                 "internalType": "address",
-                "name": "shelf",
+                "name": "shelf_",
                 "type": "address"
             },
             {
@@ -667,8 +714,20 @@
         ],
         "name": "unlock",
         "outputs": [],
-        "payable": false,
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "withdrawAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     }
 ]
