@@ -84,7 +84,7 @@ const Scorecard: React.FC<Props> = (props: Props) => {
   }, [existingRiskGroups])
 
   const recoveryRatePDAvg = React.useMemo(() => {
-    if (!existingRiskGroups || existingRiskGroups.length === 0) return 0
+    if (!existingRiskGroups || existingRiskGroups.length === 0 || !existingRiskGroups[0].recoveryRatePD) return -1
     return (
       existingRiskGroups
         .map(
@@ -123,7 +123,7 @@ const Scorecard: React.FC<Props> = (props: Props) => {
           </Stack>
 
           <Stack alignItems="center">
-            <HeaderValue>{toPrecision(recoveryRatePDAvg, 2)}%</HeaderValue>
+            <HeaderValue>{recoveryRatePDAvg === -1 ? '-' : `${toPrecision(recoveryRatePDAvg, 2)}%`}</HeaderValue>
             <HeaderLabel>Average risk adjustment</HeaderLabel>
           </Stack>
           <Caret style={{ marginLeft: 'auto', position: 'relative', top: '0' }}>
@@ -162,15 +162,16 @@ const Scorecard: React.FC<Props> = (props: Props) => {
                         : 'N/A'}
                     </TableCell>
                     <TableCell>
-                      {toPrecision(
-                        parseFloat(
-                          Fixed27Base.sub(riskGroup.recoveryRatePD)
-                            .div(new BN(10).pow(new BN(22)))
-                            .toString()
-                        ) / 1000,
-                        2
-                      )}
-                      %
+                      {riskGroup.recoveryRatePD
+                        ? `${toPrecision(
+                            parseFloat(
+                              Fixed27Base.sub(riskGroup.recoveryRatePD)
+                                .div(new BN(10).pow(new BN(22)))
+                                .toString()
+                            ) / 1000,
+                            2
+                          )} %`
+                        : '-'}
                     </TableCell>
                     <TableCell>
                       {toPrecision(
