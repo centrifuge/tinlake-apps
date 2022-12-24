@@ -123,7 +123,7 @@ const Scorecard: React.FC<Props> = (props: Props) => {
           </Stack>
 
           <Stack alignItems="center">
-            <HeaderValue>{recoveryRatePDAvg == -1 ? '-' : `${toPrecision(recoveryRatePDAvg, 2)}%`}</HeaderValue>
+            <HeaderValue>{recoveryRatePDAvg === -1 ? '-' : `${toPrecision(recoveryRatePDAvg, 2)}%`}</HeaderValue>
             <HeaderLabel>Average risk adjustment</HeaderLabel>
           </Stack>
           <Caret style={{ marginLeft: 'auto', position: 'relative', top: '0' }}>
