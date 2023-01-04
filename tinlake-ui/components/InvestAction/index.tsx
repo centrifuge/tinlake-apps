@@ -31,6 +31,7 @@ const InvestAction: React.FC<Props> = (props) => {
 
   const isUpcoming = poolData?.isUpcoming
   const isLaunching = poolData?.isLaunching
+  const isOnboardingEnabled = poolData?.isOnboardingEnabled
   const hasDoneKYC = investorOnboardingData?.completed
   const canInvestInPool =
     props.pool && props.tranche
@@ -82,7 +83,7 @@ const InvestAction: React.FC<Props> = (props) => {
 
   return (
     <>
-      {isUpcoming && address && hasDoneKYC ? (
+      {(isUpcoming || !isOnboardingEnabled) && address && hasDoneKYC ? (
         <Tooltip title="Upcoming pool" description="This upcoming pool is not open for investments yet">
           <Button primary label="Invest" disabled />
         </Tooltip>

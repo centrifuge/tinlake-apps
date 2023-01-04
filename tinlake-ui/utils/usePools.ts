@@ -12,6 +12,7 @@ export interface PoolData {
   name: string
   slug: string
   isUpcoming: boolean
+  isOnboardingEnabled: boolean
   isArchived: boolean
   isLaunching: boolean
   isOversubscribed: boolean
@@ -282,14 +283,16 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
         pool.isUpcoming ||
         poolConfig.metadata.isUpcoming ||
         (!pool.assetValue && !pool.reserve) ||
-        (pool.assetValue?.isZero() && pool.reserve?.isZero()) ||
-        (!config.featureFlagNewOnboardingPools.includes(pool.id) && !pool.isLaunching)
+        (pool.assetValue?.isZero() && pool.reserve?.isZero())
+
+      const isOnboardingEnabled = config.featureFlagNewOnboardingPools.includes(pool.id) || pool.isLaunching
 
       const capacity = capacityPerPool[pool.id]
       return {
         ...pool,
         capacity,
         isUpcoming: !!isUpcoming,
+        isOnboardingEnabled,
         isArchived: !!poolConfig.metadata.isArchived,
         order: isUpcoming ? -2 : pool.isOversubscribed || !capacity ? -1 : capacity.div(UintBase).toNumber(),
         capacityGivenMaxReserve: capacityGivenMaxReservePerPool[pool.id],
