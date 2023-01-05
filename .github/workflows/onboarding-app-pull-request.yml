@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  deployments: write
+  statuses: write
 
 jobs:
   build-and-deploy:
@@ -67,7 +69,7 @@ jobs:
           NEXT_PUBLIC_TRANSACTION_TIMEOUT: '3600'
 
       - name: Deploy To Netlify
-        uses: nwtgck/actions-netlify@v1.2.0
+        uses: nwtgck/actions-netlify@v1.2.4
         with:
           alias: pr-${{ github.event.pull_request.number }}
           deploy-message: ${{ github.event.commit.message }}

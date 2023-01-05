@@ -4,7 +4,7 @@ import { BigNumber, ethers } from 'ethers'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useIpfsPools } from '../components/IpfsPoolsProvider'
-import config, { IpfsPools, JuniorInvestor } from '../config'
+import { IpfsPools, JuniorInvestor } from '../config'
 import { Call, multicall } from './multicall'
 import { Fixed27Base, seniorToJuniorRatio } from './ratios'
 
@@ -63,7 +63,6 @@ export interface PoolData {
   isUpcoming: boolean
   isLaunching: boolean
   poolClosing?: boolean
-  isOnboardingEnabled: boolean
 }
 
 export type EpochData = {
@@ -478,8 +477,6 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
   data.totalRedemptionsCurrency = juniorRedemptionsCurrency.add(seniorRedemptionsCurrency)
 
   data.isUpcoming = pool.metadata.isUpcoming || (data.netAssetValue.isZero() && data.reserve.isZero())
-
-  data.isOnboardingEnabled = !!(config.featureFlagNewOnboardingPools.includes(poolId) || pool.metadata.isLaunching)
 
   data.isLaunching = !!pool.metadata.isLaunching
 

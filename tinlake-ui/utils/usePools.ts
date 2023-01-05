@@ -2,7 +2,7 @@ import BN from 'bn.js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { useIpfsPools } from '../components/IpfsPoolsProvider'
-import config, { IpfsPools, Pool, PoolStatus } from '../config'
+import { IpfsPools, Pool, PoolStatus } from '../config'
 import Apollo from '../services/apollo'
 import { Call, multicall } from './multicall'
 import { Fixed27Base, UintBase } from './ratios'
@@ -12,7 +12,6 @@ export interface PoolData {
   name: string
   slug: string
   isUpcoming: boolean
-  isOnboardingEnabled: boolean
   isArchived: boolean
   isLaunching: boolean
   isOversubscribed: boolean
@@ -285,14 +284,11 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
         (!pool.assetValue && !pool.reserve) ||
         (pool.assetValue?.isZero() && pool.reserve?.isZero())
 
-      const isOnboardingEnabled = config.featureFlagNewOnboardingPools.includes(pool.id) || pool.isLaunching
-
       const capacity = capacityPerPool[pool.id]
       return {
         ...pool,
         capacity,
         isUpcoming: !!isUpcoming,
-        isOnboardingEnabled,
         isArchived: !!poolConfig.metadata.isArchived,
         order: isUpcoming ? -2 : pool.isOversubscribed || !capacity ? -1 : capacity.div(UintBase).toNumber(),
         capacityGivenMaxReserve: capacityGivenMaxReservePerPool[pool.id],
