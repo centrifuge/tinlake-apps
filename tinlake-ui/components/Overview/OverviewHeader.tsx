@@ -24,6 +24,7 @@ import { ValuePairList } from '../ValuePairList'
 interface Props {
   selectedPool: Pool
   investButton: React.ReactElement
+  isOnboardingEnabled: boolean
 }
 
 const OverviewHeader: React.FC<Props> = (props: Props) => {
@@ -149,9 +150,11 @@ const OverviewHeader: React.FC<Props> = (props: Props) => {
         {isMobile ? (
           <Stack gap="medium">
             <ValuePairList items={poolStats} />
-            <ButtonGroup>
-              <Box display={{ small: 'none' }}>{props.investButton}</Box>
-            </ButtonGroup>
+            {props.isOnboardingEnabled && (
+              <ButtonGroup>
+                <Box display={{ small: 'none' }}>{props.investButton}</Box>
+              </ButtonGroup>
+            )}
           </Stack>
         ) : (
           <Shelf justifyContent="space-evenly">

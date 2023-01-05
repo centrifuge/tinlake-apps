@@ -49,6 +49,7 @@ export interface BasePool {
 
 export interface UpcomingPool extends BasePool {
   isUpcoming: true
+  addresses?: ContractAddresses
   presetValues: {
     seniorInterestRate?: string
     minimumJuniorRatio?: string
@@ -74,32 +75,34 @@ export interface LaunchingPool extends BasePool {
   isLaunching: true
 }
 
+export interface ContractAddresses {
+  TINLAKE_CURRENCY: string
+  ROOT_CONTRACT: string
+  ACTIONS: string
+  PROXY_REGISTRY: string
+  COLLATERAL_NFT: string
+  SENIOR_TOKEN: string
+  JUNIOR_TOKEN: string
+  CLERK?: string
+  ASSESSOR: string
+  RESERVE: string
+  SENIOR_TRANCHE: string
+  JUNIOR_TRANCHE: string
+  FEED: string
+  POOL_ADMIN?: string
+  SENIOR_MEMBERLIST: string
+  JUNIOR_MEMBERLIST: string
+  COORDINATOR: string
+  PILE: string
+  MCD_VAT?: string
+  MCD_JUG?: string
+  MAKER_MGR?: string
+}
+
 export interface Pool extends BasePool {
   isUpcoming: boolean
   isLaunching: boolean
-  addresses: {
-    TINLAKE_CURRENCY: string
-    ROOT_CONTRACT: string
-    ACTIONS: string
-    PROXY_REGISTRY: string
-    COLLATERAL_NFT: string
-    SENIOR_TOKEN: string
-    JUNIOR_TOKEN: string
-    CLERK?: string
-    ASSESSOR: string
-    RESERVE: string
-    SENIOR_TRANCHE: string
-    JUNIOR_TRANCHE: string
-    FEED: string
-    POOL_ADMIN?: string
-    SENIOR_MEMBERLIST: string
-    JUNIOR_MEMBERLIST: string
-    COORDINATOR: string
-    PILE: string
-    MCD_VAT?: string
-    MCD_JUG?: string
-    MAKER_MGR?: string
-  }
+  addresses: ContractAddresses
   versions?: {
     FEED?: number
     POOL_ADMIN?: number

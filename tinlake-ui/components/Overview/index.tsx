@@ -3,7 +3,7 @@ import { Heading, Paragraph } from 'grommet'
 import { Catalog, Chat, Globe, StatusInfo as StatusInfoIcon } from 'grommet-icons'
 import * as React from 'react'
 import styled from 'styled-components'
-import { Pool, UpcomingPool } from '../../config'
+import config, { Pool, UpcomingPool } from '../../config'
 import InvestmentOverview from '../../containers/Investment/View/InvestmentOverview'
 import { Button } from '../Button'
 import { ButtonGroup } from '../ButtonGroup'
@@ -34,6 +34,17 @@ const Overview: React.FC<Props> = ({ selectedPool }) => {
     setModalIsOpen(false)
   }
 
+  const isOnboardingEnabled = React.useMemo(() => {
+    if (selectedPool.addresses?.ROOT_CONTRACT) {
+      return !!(
+        config.featureFlagNewOnboardingPools.includes(selectedPool.addresses?.ROOT_CONTRACT) ||
+        selectedPool.metadata.isLaunching
+      )
+    }
+
+    return false
+  }, [selectedPool])
+
   return (
     <Stack gap="xlarge" mt="xlarge">
       {!isUpcomingPool(selectedPool) && (
@@ -41,9 +52,15 @@ const Overview: React.FC<Props> = ({ selectedPool }) => {
           <PageTitle
             pool={selectedPool}
             page="Overview"
-            rightContent={<Box display={['none', 'block']}>{<InvestAction pool={selectedPool} />}</Box>}
+            rightContent={
+              <Box display={['none', 'block']}>{isOnboardingEnabled && <InvestAction pool={selectedPool} />}</Box>
+            }
           />
-          <OverviewHeader selectedPool={selectedPool as Pool} investButton={<InvestAction pool={selectedPool} />} />
+          <OverviewHeader
+            selectedPool={selectedPool as Pool}
+            investButton={<InvestAction pool={selectedPool} />}
+            isOnboardingEnabled={isOnboardingEnabled}
+          />
         </div>
       )}
       {/* <Box direction="row" gap="small">

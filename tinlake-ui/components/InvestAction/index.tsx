@@ -22,7 +22,7 @@ const InvestAction: React.FC<Props> = (props) => {
   const dispatch = useDispatch()
 
   const { data: poolData } = usePool(
-    props.pool && 'addresses' in props.pool ? props.pool.addresses.ROOT_CONTRACT : undefined
+    props.pool && 'addresses' in props.pool ? props.pool.addresses?.ROOT_CONTRACT : undefined
   )
 
   const hasPoolData = props.pool ? !!poolData : true
@@ -31,7 +31,6 @@ const InvestAction: React.FC<Props> = (props) => {
 
   const isUpcoming = poolData?.isUpcoming
   const isLaunching = poolData?.isLaunching
-  const isOnboardingEnabled = poolData?.isOnboardingEnabled
   const hasDoneKYC = investorOnboardingData?.completed
   const canInvestInPool =
     props.pool && props.tranche
@@ -83,7 +82,7 @@ const InvestAction: React.FC<Props> = (props) => {
 
   return (
     <>
-      {(isUpcoming || !isOnboardingEnabled) && address && hasDoneKYC ? (
+      {isUpcoming && address && hasDoneKYC ? (
         <Tooltip title="Upcoming pool" description="This upcoming pool is not open for investments yet">
           <Button primary label="Invest" disabled />
         </Tooltip>

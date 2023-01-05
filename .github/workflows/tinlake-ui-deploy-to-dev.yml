@@ -7,9 +7,6 @@ on:
       - 'tinlake-ui/**'
       - '.github/workflows/tinlake-ui-deploy-to-dev.yml'
 
-permissions:
-  contents: write
-
 jobs:
   build-and-deploy-to-goerli:
     runs-on: ubuntu-latest
@@ -74,7 +71,7 @@ jobs:
           NEXT_PUBLIC_TRANSACTION_TIMEOUT: '3600'
 
       - name: Deploy To Netlify
-        uses: nwtgck/actions-netlify@v1.2.0
+        uses: nwtgck/actions-netlify@v1.2.4
         with:
           deploy-message: ${{ github.event.head_commit.message }}
           enable-commit-comment: false
@@ -150,7 +147,7 @@ jobs:
           NEXT_PUBLIC_TRANSACTION_TIMEOUT: '3600'
 
       - name: Deploy To Netlify
-        uses: nwtgck/actions-netlify@v1.2.0
+        uses: nwtgck/actions-netlify@v1.2.4
         with:
           deploy-message: ${{ github.event.head_commit.message }}
           enable-commit-comment: false
