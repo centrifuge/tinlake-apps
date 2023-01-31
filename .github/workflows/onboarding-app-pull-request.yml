@@ -5,11 +5,6 @@ on:
       - 'onboarding-app/**'
       - '.github/workflows/onboarding-app-pull-request.yml'
 
-permissions:
-  contents: write
-  deployments: write
-  statuses: write
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
