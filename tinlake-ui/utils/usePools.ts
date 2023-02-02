@@ -64,8 +64,17 @@ export function usePools() {
 async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
   const toBN = (val: BigNumber) => new BN(val.toString())
 
+  const filteredActivePools = ipfsPools.active.filter(
+    (pool: Pool) => pool.addresses.ROOT_CONTRACT !== '0x4B6CA198d257D755A5275648D471FE09931b764A'
+  )
+
+  const filteredPools = {
+    ...ipfsPools,
+    active: filteredActivePools,
+  }
+
   const calls: Call[] = []
-  ipfsPools.active.forEach((pool: Pool) => {
+  filteredPools.active.forEach((pool: Pool) => {
     calls.push(
       {
         target: pool.addresses.ASSESSOR,
@@ -169,7 +178,7 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
   })
 
   const [poolsData, multicallData] = await Promise.all([
-    Apollo.getPools(ipfsPools),
+    Apollo.getPools(filteredPools),
     multicall<{ [key: string]: State }>(calls),
   ])
 
@@ -243,7 +252,7 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
       .add(state.pendingSeniorInvestments)
       .sub(state.pendingSeniorRedemptions)
 
-    const newJuniorAsset = (state.netAssetValue || new BN(0)).add(newReserve).sub(newSeniorAsset)
+    const newJuniorAsset = state.netAssetValue.add(newReserve).sub(newSeniorAsset)
     const maxPoolSize = newJuniorAsset
       .mul(Fixed27Base.mul(new BN(10).pow(new BN(6))).div(Fixed27Base.sub(state.maxSeniorRatio)))
       .div(new BN(10).pow(new BN(6)))
@@ -276,7 +285,9 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
   })
 
   const poolsWithCapacity = poolsData.pools.map((pool: PoolData) => {
-    const poolConfig = ipfsPools.active.find((p) => p.addresses.ROOT_CONTRACT.toLowerCase() === pool.id.toLowerCase())!
+    const poolConfig = filteredPools.active.find(
+      (p) => p.addresses.ROOT_CONTRACT.toLowerCase() === pool.id.toLowerCase()
+    )!
     if (pool.id in capacityPerPool) {
       const isUpcoming =
         pool.isUpcoming ||
