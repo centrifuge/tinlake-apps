@@ -243,7 +243,7 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
       .add(state.pendingSeniorInvestments)
       .sub(state.pendingSeniorRedemptions)
 
-    const newJuniorAsset = state.netAssetValue.add(newReserve).sub(newSeniorAsset)
+    const newJuniorAsset = (state.netAssetValue || new BN(0)).add(newReserve).sub(newSeniorAsset)
     const maxPoolSize = newJuniorAsset
       .mul(Fixed27Base.mul(new BN(10).pow(new BN(6))).div(Fixed27Base.sub(state.maxSeniorRatio)))
       .div(new BN(10).pow(new BN(6)))
