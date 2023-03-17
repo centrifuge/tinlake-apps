@@ -4,6 +4,7 @@ import { PoolData } from './usePools'
 export const getPoolStatus = (pool: PoolData): PoolStatus => {
   if (pool.isArchived) return 'Closed'
   if (pool.isUpcoming) return 'Upcoming'
+  if (pool.slug.startsWith('blocktower')) return 'Private Pool'
   if ((pool.totalDebt.eqn(0) && pool.totalRepaysAggregatedAmount.eqn(0)) || pool.totalDebt.gtn(0)) {
     return 'Active'
   }

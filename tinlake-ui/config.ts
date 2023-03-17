@@ -56,7 +56,7 @@ export interface UpcomingPool extends BasePool {
   }
 }
 
-export type PoolStatus = 'Upcoming' | 'Active' | 'Deployed' | 'Closed'
+export type PoolStatus = 'Upcoming' | 'Active' | 'Deployed' | 'Closed' | 'Private Pool'
 
 export interface ArchivedPoolData {
   status: PoolStatus

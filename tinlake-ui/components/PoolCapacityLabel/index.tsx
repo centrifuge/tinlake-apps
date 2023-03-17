@@ -30,6 +30,10 @@ export const PoolCapacityLabel: React.FC<Props> = ({ pool }) => {
     return <Label blue>Upcoming</Label>
   }
 
+  if (pool?.slug.startsWith('blocktower')) {
+    return <Label orange>Private Pool</Label>
+  }
+
   if (pool?.isArchived) {
     return <Label>Archived</Label>
   }
