@@ -1,20 +1,18 @@
 import Tinlake from '@centrifuge/tinlake-js'
-import BN from 'bn.js'
+import { u8aToHex } from '@polkadot/util'
+import { decodeAddress, isAddress } from '@polkadot/util-crypto'
 import { ethers } from 'ethers'
-import { Box, Button, Select } from 'grommet'
+import { Box, Button, Select, TextInput } from 'grommet'
 import { CircleAlert } from 'grommet-icons'
 import * as React from 'react'
-import { useQuery } from 'react-query'
 import { connect, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { useDebugFlags } from '../../components/DebugFlags'
 import { Tooltip } from '../../components/Tooltip'
 import config from '../../config'
 import { CentChainWalletState, InjectedAccount } from '../../ducks/centChainWallet'
 import { createTransaction, TransactionProps, useTransactionState } from '../../ducks/transactions'
-import { centChainService } from '../../services/centChain'
 import { accountIdToCentChainAddr } from '../../services/centChain/accountIdToCentChainAddr'
-import { centChainAddrToAccountId } from '../../services/centChain/centChainAddrToAccountId'
-import { isCentChainAddr } from '../../services/centChain/isCentChainAddr'
 import { useInterval } from '../../utils/hooks'
 import { shortAddr } from '../../utils/shortAddr'
 import { useAddress } from '../../utils/useAddress'
@@ -44,41 +42,30 @@ const SetCentAccount: React.FC<TransactionProps> = ({ createTransaction }: Trans
   const ethAddr = useAddress()
   const { data: ethLink, refetch: refetchEthLink } = useEthLink()
   const [selectedCentAcc, selectCentAcc] = React.useState<InjectedAccount>()
+  const [customRewardAddress, setCustomRewardAddress] = React.useState('')
+
+  const { linkCustomRewardAddress } = useDebugFlags()
 
   React.useEffect(() => {
     selectCentAcc(cWallet.accounts[0])
   }, [cWallet.accounts[0]?.addrCentChain])
 
-  const { data: isCFGBalanceZero } = useQuery(
-    ['balance', selectedCentAcc?.addrCentChain],
-    async () => {
-      if (selectedCentAcc?.addrCentChain) {
-        const account = await centChainService().account(selectedCentAcc.addrCentChain)
-
-        // @ts-expect-error
-        if (account?.data?.free) {
-          // @ts-expect-error
-          const freeBalance = new BN(account.data.free.toString())
-
-          return freeBalance.isNeg() || freeBalance.isZero()
-        }
-      }
-    },
-    { enabled: selectedCentAcc !== undefined }
-  )
-
   const [status, , setTxId] = useTransactionState()
 
   const set = async () => {
-    if (!selectedCentAcc || !isCentChainAddr(selectedCentAcc.addrCentChain)) {
-      return
-    }
     const provider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
     const tinlake = new Tinlake({ contractAddresses: { CLAIM_CFG: config.claimCFGContractAddress }, provider })
     const txId = await createTransaction(
-      `Link account ${shortAddr(selectedCentAcc.addrCentChain)}`,
+      `Link account ${shortAddr(
+        linkCustomRewardAddress ? customRewardAddress : (selectedCentAcc?.addrCentChain as string)
+      )}`,
       'updateClaimCFGAccountID',
-      [tinlake, centChainAddrToAccountId(selectedCentAcc.addrCentChain)]
+      [
+        tinlake,
+        u8aToHex(
+          decodeAddress(linkCustomRewardAddress ? customRewardAddress : (selectedCentAcc?.addrCentChain as string))
+        ),
+      ]
     )
     setTxId(txId)
   }
@@ -119,68 +106,70 @@ const SetCentAccount: React.FC<TransactionProps> = ({ createTransaction }: Trans
   const disabled =
     status === 'unconfirmed' ||
     status === 'pending' ||
-    !selectedCentAcc ||
-    !isCentChainAddr(selectedCentAcc.addrCentChain)
+    (linkCustomRewardAddress
+      ? !isAddress(customRewardAddress)
+      : !selectedCentAcc || !isAddress(selectedCentAcc.addrCentChain))
 
   return (
     <div>
-      Select the Centrifuge Chain account you want to link to your Ethereum account below. Note: To claim rewards, link
-      your Centrifuge Chain account before redeeming your investment.
+      {linkCustomRewardAddress ? 'Enter' : 'Select'} the Centrifuge Chain account you want to link to your Ethereum
+      account below. Note: To claim rewards, link your Centrifuge Chain account before redeeming your investment.
       <LinkingWarning>
         <LinkingAlert />
-        <HelpText>Make sure to select the correct account – linking the account cannot be undone</HelpText>
+        <HelpText>
+          Make sure to {linkCustomRewardAddress ? 'enter' : 'select'} the correct account – linking the account cannot
+          be undone. Also, you will need to fund this account with CFG to cover transaction costs for claiming rewards.
+          CFG is available on many exchanges.
+        </HelpText>
       </LinkingWarning>
-      {isCFGBalanceZero && (
-        <LinkingWarning>
-          <LinkingAlert />
-          <HelpText>
-            This account does not hold any CFG to cover transaction costs for the linking transaction. CFG is available
-            on many exchanges.
-          </HelpText>
-        </LinkingWarning>
-      )}
-      <div>
-        <Select
-          options={cWallet.accounts}
-          value={selectedCentAcc?.addrCentChain}
-          valueKey="addrCentChain"
-          valueLabel={
-            selectedCentAcc ? (
-              <Box pad="xsmall" style={{ textAlign: 'left' }}>
-                {selectedCentAcc.name && (
-                  <div>
-                    <strong>{selectedCentAcc.name}</strong>
-                  </div>
-                )}
-                <div>{selectedCentAcc.addrCentChain}</div>
-              </Box>
-            ) : (
-              ''
-            )
-          }
-          labelKey={({ name, addrCentChain }: InjectedAccount) => (
-            <div style={{ textAlign: 'left' }}>
-              {name && (
-                <div>
-                  <strong>{name}</strong>
+      {linkCustomRewardAddress ? (
+        <TextInput onChange={(event) => setCustomRewardAddress(event.target.value)} value={customRewardAddress} />
+      ) : (
+        <>
+          <div>
+            <Select
+              options={cWallet.accounts}
+              value={selectedCentAcc?.addrCentChain}
+              valueKey="addrCentChain"
+              valueLabel={
+                selectedCentAcc ? (
+                  <Box pad="xsmall" style={{ textAlign: 'left' }}>
+                    {selectedCentAcc.name && (
+                      <div>
+                        <strong>{selectedCentAcc.name}</strong>
+                      </div>
+                    )}
+                    <div>{selectedCentAcc.addrCentChain}</div>
+                  </Box>
+                ) : (
+                  ''
+                )
+              }
+              labelKey={({ name, addrCentChain }: InjectedAccount) => (
+                <div style={{ textAlign: 'left' }}>
+                  {name && (
+                    <div>
+                      <strong>{name}</strong>
+                    </div>
+                  )}
+                  <div>{addrCentChain}</div>
                 </div>
               )}
-              <div>{addrCentChain}</div>
-            </div>
-          )}
-          onChange={({ option }) => selectCentAcc(option)}
-        />
-      </div>
-      <br />
-      <Tooltip
-        title="Unexpected/wrong addresses?"
-        description={`Your address may show up ${
-          selectedCentAcc ? `as ${shortAddr(selectedCentAcc.addrInjected)}` : 'differently'
-        } in the Polkadot extension. In the extension settings, change the display address format to "Centrifuge Chain" to see your address in the right format.`}
-        underline
-      >
-        <Small>Unexpected/wrong addresses?</Small>
-      </Tooltip>
+              onChange={({ option }) => selectCentAcc(option)}
+            />
+          </div>
+          <br />
+          <Tooltip
+            title="Unexpected/wrong addresses?"
+            description={`Your address may show up ${
+              selectedCentAcc ? `as ${shortAddr(selectedCentAcc.addrInjected)}` : 'differently'
+            } in the Polkadot extension. In the extension settings, change the display address format to "Centrifuge Chain" to see your address in the right format.`}
+            underline
+          >
+            <Small>Unexpected/wrong addresses?</Small>
+          </Tooltip>
+        </>
+      )}
       <Box>
         <Button
           primary
