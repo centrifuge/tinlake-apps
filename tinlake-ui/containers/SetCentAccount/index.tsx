@@ -1,5 +1,6 @@
 import Tinlake from '@centrifuge/tinlake-js'
-import { isAddress } from '@polkadot/util-crypto'
+import { u8aToHex } from '@polkadot/util'
+import { decodeAddress, isAddress } from '@polkadot/util-crypto'
 import { ethers } from 'ethers'
 import { Box, Button, Select, TextInput } from 'grommet'
 import { CircleAlert } from 'grommet-icons'
@@ -12,7 +13,6 @@ import config from '../../config'
 import { CentChainWalletState, InjectedAccount } from '../../ducks/centChainWallet'
 import { createTransaction, TransactionProps, useTransactionState } from '../../ducks/transactions'
 import { accountIdToCentChainAddr } from '../../services/centChain/accountIdToCentChainAddr'
-import { centChainAddrToAccountId } from '../../services/centChain/centChainAddrToAccountId'
 import { useInterval } from '../../utils/hooks'
 import { shortAddr } from '../../utils/shortAddr'
 import { useAddress } from '../../utils/useAddress'
@@ -53,15 +53,19 @@ const SetCentAccount: React.FC<TransactionProps> = ({ createTransaction }: Trans
   const [status, , setTxId] = useTransactionState()
 
   const set = async () => {
-    if (!selectedCentAcc) {
-      return
-    }
     const provider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
     const tinlake = new Tinlake({ contractAddresses: { CLAIM_CFG: config.claimCFGContractAddress }, provider })
     const txId = await createTransaction(
-      `Link account ${shortAddr(linkCustomRewardAddress ? customRewardAddress : selectedCentAcc.addrCentChain)}`,
+      `Link account ${shortAddr(
+        linkCustomRewardAddress ? customRewardAddress : (selectedCentAcc?.addrCentChain as string)
+      )}`,
       'updateClaimCFGAccountID',
-      [tinlake, centChainAddrToAccountId(linkCustomRewardAddress ? customRewardAddress : selectedCentAcc.addrCentChain)]
+      [
+        tinlake,
+        u8aToHex(
+          decodeAddress(linkCustomRewardAddress ? customRewardAddress : (selectedCentAcc?.addrCentChain as string))
+        ),
+      ]
     )
     setTxId(txId)
   }
@@ -102,9 +106,9 @@ const SetCentAccount: React.FC<TransactionProps> = ({ createTransaction }: Trans
   const disabled =
     status === 'unconfirmed' ||
     status === 'pending' ||
-    !selectedCentAcc ||
-    !isAddress(selectedCentAcc.addrCentChain) ||
-    (linkCustomRewardAddress && !isAddress(customRewardAddress))
+    (linkCustomRewardAddress
+      ? !isAddress(customRewardAddress)
+      : !selectedCentAcc || !isAddress(selectedCentAcc.addrCentChain))
 
   return (
     <div>
