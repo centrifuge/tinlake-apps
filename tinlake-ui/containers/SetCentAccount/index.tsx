@@ -1,4 +1,5 @@
 import Tinlake from '@centrifuge/tinlake-js'
+import { isAddress } from '@polkadot/util-crypto'
 import { ethers } from 'ethers'
 import { Box, Button, Select, TextInput } from 'grommet'
 import { CircleAlert } from 'grommet-icons'
@@ -12,7 +13,6 @@ import { CentChainWalletState, InjectedAccount } from '../../ducks/centChainWall
 import { createTransaction, TransactionProps, useTransactionState } from '../../ducks/transactions'
 import { accountIdToCentChainAddr } from '../../services/centChain/accountIdToCentChainAddr'
 import { centChainAddrToAccountId } from '../../services/centChain/centChainAddrToAccountId'
-import { isCentChainAddr } from '../../services/centChain/isCentChainAddr'
 import { useInterval } from '../../utils/hooks'
 import { shortAddr } from '../../utils/shortAddr'
 import { useAddress } from '../../utils/useAddress'
@@ -103,8 +103,8 @@ const SetCentAccount: React.FC<TransactionProps> = ({ createTransaction }: Trans
     status === 'unconfirmed' ||
     status === 'pending' ||
     !selectedCentAcc ||
-    !isCentChainAddr(selectedCentAcc.addrCentChain) ||
-    (linkCustomRewardAddress && !isCentChainAddr(customRewardAddress))
+    !isAddress(selectedCentAcc.addrCentChain) ||
+    (linkCustomRewardAddress && !isAddress(customRewardAddress))
 
   return (
     <div>
