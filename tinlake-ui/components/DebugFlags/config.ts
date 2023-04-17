@@ -275,6 +275,10 @@ export const flagsConfig = {
     type: 'checkbox',
     default: params.get('debug') === 'true',
   },
+  linkCustomRewardAddress: {
+    type: 'checkbox',
+    default: params.get('debug') === 'true',
+  },
   showAdmin: {
     type: 'checkbox',
     default: params.get('admin') != null,

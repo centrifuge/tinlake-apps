@@ -45,7 +45,7 @@ const UserRewards: React.FC = () => {
 
   const [showLink, setShowLink] = React.useState(!!router.query.link)
 
-  const { showRewardsInfo } = useDebugFlags()
+  const { showRewardsInfo, linkCustomRewardAddress } = useDebugFlags()
 
   const connect = () => dispatch(ensureAuthed())
 
@@ -127,7 +127,7 @@ const UserRewards: React.FC = () => {
               </Card>
             ) : (
               <>
-                {!(cWallet.state === 'connected' && cWallet.accounts.length >= 1) && (
+                {!(cWallet.state === 'connected' && cWallet.accounts.length >= 1) && !linkCustomRewardAddress && (
                   <Card>
                     <Box pad="medium">
                       <Head>Link Your Centrifuge Chain Account</Head>
@@ -136,14 +136,14 @@ const UserRewards: React.FC = () => {
                   </Card>
                 )}
 
-                {cWallet.state === 'connected' && cWallet.accounts.length >= 1 && (
+                {(cWallet.state === 'connected' && cWallet.accounts.length >= 1) || linkCustomRewardAddress ? (
                   <Card>
                     <Box pad="medium">
                       <Head>Link Your Centrifuge Chain Account</Head>
                       <SetCentAccount />
                     </Box>
                   </Card>
-                )}
+                ) : null}
               </>
             ))}
 
