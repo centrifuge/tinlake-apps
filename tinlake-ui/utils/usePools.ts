@@ -300,7 +300,7 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
     }
     return pool
   })
-  return { ...poolsData, pools: poolsWithCapacity }
+  return { ...poolsData, pools: poolsWithCapacity } as any
 }
 
 interface State {

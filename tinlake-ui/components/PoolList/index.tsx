@@ -1,4 +1,4 @@
-import { baseToDisplay, feeToInterestRate } from '@centrifuge/tinlake-js'
+import { baseToDisplay } from '@centrifuge/tinlake-js'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import ApolloClient from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
@@ -99,7 +99,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
     },
     {
       header: 'Investment Capacity',
-      cell: (p: PoolData) => <PoolCapacityLabel pool={p} />,
+      cell: (p: PoolData) => <Value value="" unit="N/A" />,
     },
     showCapacity
       ? [
@@ -117,9 +117,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
       : [
           {
             header: 'Pool Value',
-            cell: (p: PoolData) => (
-              <Value value={toNumber((p.reserve || new BN(0)).add(p.assetValue || new BN(0)), 18)} unit={p.currency} />
-            ),
+            cell: (p: PoolData) => <Value value="" unit="N/A" />,
           },
           {
             header: (
@@ -128,22 +126,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
               </Tooltip>
             ),
             subHeader: '30 days',
-            cell: (p: PoolData) => {
-              const v = feeToInterestRate(p.seniorInterestRate || new BN(0))
-              return v === '0.00' ? (
-                <Value value="" unit="-" />
-              ) : p.isUpcoming ||
-                (!p.assetValue && !p.reserve) ||
-                (p.assetValue?.isZero() && p.reserve?.isZero()) ||
-                !p.seniorYield30Days ||
-                p.seniorYield30Days.isZero() ||
-                !p.juniorYield90Days ||
-                p.juniorYield90Days.isZero() ? (
-                <SubNumber>Target: {v} % APR</SubNumber>
-              ) : (
-                <Value value={parseFloat(getDropAPY(p.seniorYield30Days) || '0').toFixed(2)} unit="%" />
-              )
-            },
+            cell: (p: PoolData) => <Value value="" unit="N/A" />,
           },
         ],
     showAll && {
