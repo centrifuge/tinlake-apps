@@ -1,4 +1,3 @@
-import { baseToDisplay } from '@centrifuge/tinlake-js'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import ApolloClient from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
@@ -9,7 +8,6 @@ import Link from 'next/link'
 import { withRouter } from 'next/router'
 import * as React from 'react'
 import { PropsOf } from '../../helpers'
-import { toPrecision } from '../../utils/toPrecision'
 import { useMedia } from '../../utils/useMedia'
 import { PoolData, PoolsData } from '../../utils/usePools'
 import { useDebugFlags } from '../DebugFlags'
@@ -47,11 +45,11 @@ interface Column {
   subHeader?: string
 }
 
-const getDropAPY = (dropAPY: BN | null) => {
-  if (dropAPY) {
-    return toPrecision(baseToDisplay(dropAPY.muln(100), 27), 2)
-  }
-}
+// const getDropAPY = (dropAPY: BN | null) => {
+//   if (dropAPY) {
+//     return toPrecision(baseToDisplay(dropAPY.muln(100), 27), 2)
+//   }
+// }
 
 const toNumber = (value: BN | undefined, decimals: number) => {
   return value ? parseInt(value.toString(), 10) / 10 ** decimals : 0
