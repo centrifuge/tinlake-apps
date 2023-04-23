@@ -53,6 +53,20 @@ const Dashboard: React.FC<Props> = () => {
         </Box>
       )}
 
+      <div
+        style={{
+          width: '100%',
+          border: '1px solid rgb(41, 118, 212)',
+          padding: '8px 16px',
+          color: 'white',
+          background: 'rgb(41, 118, 212)',
+          fontSize: '14px',
+          fontWeight: 'bold',
+        }}
+      >
+        Tinlake is experiencing some technical issues and not all data is being loaded correctly.
+      </div>
+
       <PoolsMetrics totalValue={pools.data.totalValue} />
       <PoolList poolsData={pools.data} />
     </Stack>

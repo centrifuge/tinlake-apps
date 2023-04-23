@@ -1,4 +1,3 @@
-import { baseToDisplay, feeToInterestRate } from '@centrifuge/tinlake-js'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import ApolloClient from 'apollo-client'
 import { createHttpLink } from 'apollo-link-http'
@@ -9,7 +8,6 @@ import Link from 'next/link'
 import { withRouter } from 'next/router'
 import * as React from 'react'
 import { PropsOf } from '../../helpers'
-import { toPrecision } from '../../utils/toPrecision'
 import { useMedia } from '../../utils/useMedia'
 import { PoolData, PoolsData } from '../../utils/usePools'
 import { useDebugFlags } from '../DebugFlags'
@@ -47,11 +45,11 @@ interface Column {
   subHeader?: string
 }
 
-const getDropAPY = (dropAPY: BN | null) => {
-  if (dropAPY) {
-    return toPrecision(baseToDisplay(dropAPY.muln(100), 27), 2)
-  }
-}
+// const getDropAPY = (dropAPY: BN | null) => {
+//   if (dropAPY) {
+//     return toPrecision(baseToDisplay(dropAPY.muln(100), 27), 2)
+//   }
+// }
 
 const toNumber = (value: BN | undefined, decimals: number) => {
   return value ? parseInt(value.toString(), 10) / 10 ** decimals : 0
@@ -99,7 +97,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
     },
     {
       header: 'Investment Capacity',
-      cell: (p: PoolData) => <PoolCapacityLabel pool={p} />,
+      cell: (_p: PoolData) => <Value value="" unit="N/A" />,
     },
     showCapacity
       ? [
@@ -117,9 +115,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
       : [
           {
             header: 'Pool Value',
-            cell: (p: PoolData) => (
-              <Value value={toNumber((p.reserve || new BN(0)).add(p.assetValue || new BN(0)), 18)} unit={p.currency} />
-            ),
+            cell: (_p: PoolData) => <Value value="" unit="N/A" />,
           },
           {
             header: (
@@ -128,22 +124,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
               </Tooltip>
             ),
             subHeader: '30 days',
-            cell: (p: PoolData) => {
-              const v = feeToInterestRate(p.seniorInterestRate || new BN(0))
-              return v === '0.00' ? (
-                <Value value="" unit="-" />
-              ) : p.isUpcoming ||
-                (!p.assetValue && !p.reserve) ||
-                (p.assetValue?.isZero() && p.reserve?.isZero()) ||
-                !p.seniorYield30Days ||
-                p.seniorYield30Days.isZero() ||
-                !p.juniorYield90Days ||
-                p.juniorYield90Days.isZero() ? (
-                <SubNumber>Target: {v} % APR</SubNumber>
-              ) : (
-                <Value value={parseFloat(getDropAPY(p.seniorYield30Days) || '0').toFixed(2)} unit="%" />
-              )
-            },
+            cell: (_p: PoolData) => <Value value="" unit="N/A" />,
           },
         ],
     showAll && {
