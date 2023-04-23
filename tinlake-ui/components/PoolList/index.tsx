@@ -97,7 +97,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
     },
     {
       header: 'Investment Capacity',
-      cell: (p: PoolData) => <Value value="" unit="N/A" />,
+      cell: (_p: PoolData) => <Value value="" unit="N/A" />,
     },
     showCapacity
       ? [
@@ -115,7 +115,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
       : [
           {
             header: 'Pool Value',
-            cell: (p: PoolData) => <Value value="" unit="N/A" />,
+            cell: (_p: PoolData) => <Value value="" unit="N/A" />,
           },
           {
             header: (
@@ -124,7 +124,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
               </Tooltip>
             ),
             subHeader: '30 days',
-            cell: (p: PoolData) => <Value value="" unit="N/A" />,
+            cell: (_p: PoolData) => <Value value="" unit="N/A" />,
           },
         ],
     showAll && {
