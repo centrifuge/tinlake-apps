@@ -194,11 +194,6 @@ const UserRewards: React.FC = () => {
                 </Box>
                 <RewardRecipients recipients={userRewards?.links} />
               </Box>
-              {console.log(
-                userRewards.links[userRewards.links.length - 1].claimable?.toString(),
-                userRewards.links[userRewards.links.length - 1].claimed?.toString(),
-                userRewards.links[userRewards.links.length - 1].earned?.toString()
-              )}
               {showClaimStripe(userRewards) && (
                 <ClaimRewards
                   activeLink={userRewards.links[userRewards.links.length - 1]}
