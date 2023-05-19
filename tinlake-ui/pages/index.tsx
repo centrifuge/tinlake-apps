@@ -1,9 +1,7 @@
-import { Anchor, Box, Card, Heading, Paragraph } from 'grommet'
+import { Anchor, Box, Card, Paragraph } from 'grommet'
 import { GetStaticProps } from 'next'
-import { useRouter } from 'next/router'
 import * as React from 'react'
 import Auth from '../components/Auth'
-import { Button } from '../components/Button'
 import Container from '../components/Container'
 import Header from '../components/Header'
 import { IpfsPoolsProvider } from '../components/IpfsPoolsProvider'
@@ -16,44 +14,22 @@ interface Props {
   ipfsPools: IpfsPools
 }
 
-const ExploreCentrifugeBanner = () => {
-  const router = useRouter()
-
-  return (
-    <Card margin={{ top: 'medium', bottom: 'medium' }}>
-      <Box pad="medium">
-        <Heading level="5" margin={{ top: 'xxsmall', bottom: 'small' }}>
-          Tinlake is moving to Centrifuge
-        </Heading>
-        <Box>
-          <Paragraph>
-            We want to inform you that the current version of our app will soon be phased out. We have been working
-            tirelessly to bring you an enhanced and improved experience, and we are thrilled to announce that a new
-            version of our app is now available at <Anchor href="https://app.centrifuge.io" label="app.centrifuge.io" />
-            . The new version comes with a host of exciting features and improvements that we believe will greatly
-            enhance your usage. We have listened to your feedback and incorporated many of your suggestions to make the
-            app more intuitive, user-friendly, and efficient.
-          </Paragraph>
-          <Paragraph>
-            We understand that change can sometimes be challenging, but we assure you that the new version is worth the
-            transition. Our team has put in considerable effort to ensure a smooth migration process, and we will be
-            available to assist you throughout the transition period. If you have any questions or encounter any
-            difficulties during the migration process, please don’t hesitate to reach out to our support team at{' '}
-            <Anchor href="mailto:support@centrifuge.io" label="support@centrifuge.io" />. We are here to help and ensure
-            that your experience with our app remains seamless.
-          </Paragraph>
-        </Box>
-
-        <Button
-          label="Explore Centrifuge"
-          primary
-          onClick={() => router.push('https://app.centrifuge.io')}
-          margin={{ left: 'auto', top: 'medium' }}
-        />
-      </Box>
-    </Card>
-  )
-}
+const ExploreCentrifugeBanner = () => (
+  <Card
+    margin={{ top: 'medium' }}
+    pad={{ top: 'xsmall', bottom: 'xsmall', left: 'medium', right: 'medium' }}
+    style={{
+      backgroundColor: '#cde5ff',
+    }}
+  >
+    <Box>
+      <Paragraph>
+        Tinlake is no longer supported. Please proceed to the new Centrifuge app at{' '}
+        <Anchor href="https://app.centrifuge.io" label="app.centrifuge.io" />.
+      </Paragraph>
+    </Box>
+  </Card>
+)
 
 const Home: React.FC<Props> = (props: Props) => {
   return (
