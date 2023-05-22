@@ -3,6 +3,7 @@ import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { useIpfsPools } from '../components/IpfsPoolsProvider'
 import { IpfsPools, Pool, PoolStatus } from '../config'
+import Apollo from '../services/apollo'
 import { Call, multicall } from './multicall'
 import { Fixed27Base, UintBase } from './ratios'
 
@@ -167,13 +168,10 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
     }
   })
 
-  const [multicallData] = await Promise.all([multicall<{ [key: string]: State }>(calls)])
-
-  const poolsData = {
-    pools: ipfsPools.active.map(
-      (pool) => ({ id: pool.addresses.ROOT_CONTRACT, ...pool.metadata, ...pool.metadata.media } as PoolData)
-    ),
-  }
+  const [poolsData, multicallData] = await Promise.all([
+    Apollo.getPools(ipfsPools),
+    multicall<{ [key: string]: State }>(calls),
+  ])
 
   const capacityPerPool: { [key: string]: BN } = {}
   const capacityGivenMaxReservePerPool: { [key: string]: BN } = {}
@@ -300,7 +298,7 @@ async function getPools(ipfsPools: IpfsPools): Promise<PoolsData> {
     }
     return pool
   })
-  return { ...poolsData, pools: poolsWithCapacity } as any
+  return { ...poolsData, pools: poolsWithCapacity }
 }
 
 interface State {
