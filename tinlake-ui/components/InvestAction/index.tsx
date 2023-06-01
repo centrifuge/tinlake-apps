@@ -38,17 +38,9 @@ const InvestAction: React.FC<Props> = (props) => {
       : poolData?.senior?.inMemberlist || poolData?.junior?.inMemberlist
 
   function navigate() {
-    if (isUpcoming) {
-      if (!hasDoneKYC) {
-        router.push(`/onboarding?from=${encodeURIComponent(router.asPath)}`)
-      }
-    } else {
+    if (!isUpcoming && hasDoneKYC && canInvestInPool) {
       const basePath = `/pool/${(props.pool as Pool).addresses.ROOT_CONTRACT}/${props.pool?.metadata.slug}`
-      if (canInvestInPool) {
-        router.push(`${basePath}/investments`)
-      } else {
-        router.push(`${basePath}/onboarding`)
-      }
+      router.push(`${basePath}/investments`)
     }
   }
 
@@ -78,8 +70,6 @@ const InvestAction: React.FC<Props> = (props) => {
     }
   }, [address, hasData, awaitingConnectAndData])
 
-  const buttonLabel = isUpcoming && address && !hasDoneKYC ? 'Onboard as investor' : 'Invest'
-
   return (
     <>
       {isUpcoming && address && hasDoneKYC ? (
@@ -94,7 +84,7 @@ const InvestAction: React.FC<Props> = (props) => {
           <Button primary label="Invest" disabled />
         </Tooltip>
       ) : (
-        <Button primary label={buttonLabel} onClick={connectAndNavigate} />
+        !isUpcoming && hasDoneKYC && canInvestInPool && <Button primary label="Invest" onClick={connectAndNavigate} />
       )}
     </>
   )
