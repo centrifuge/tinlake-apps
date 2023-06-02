@@ -322,9 +322,6 @@ class Apollo {
         }
         `,
     })
-    if (!result.data?.pools) return { data: [] }
-    if (!result.data.pools[0]) return { data: [] }
-    if (!result.data.pools[0].loans) return { data: [] }
 
     const loans = result.data.pools.reduce((assets: any[], pool: any) => {
       if (pool.loans) {
@@ -332,6 +329,8 @@ class Apollo {
       }
       return assets
     }, [])
+
+    if (!loans) return { data: [] }
 
     const tinlakeLoans = toTinlakeLoans(loans)
     return tinlakeLoans
