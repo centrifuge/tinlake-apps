@@ -60,7 +60,7 @@ const HelpMenu: React.FC<{}> = () => {
             <MenuItem href="https://t.me/centrifuge_chat" target="_blank" icon="telegram">
               <Name>Telegram</Name>
             </MenuItem>
-            <MenuItem href="https://centrifuge.io/discord" target="_blank" icon="discord">
+            <MenuItem href="https://discord.com/invite/yEzyUq5gxF" target="_blank" icon="discord">
               <Name>Discord</Name>
             </MenuItem>
             <MenuItem href="mailto:support@centrifuge.io" target="_blank" icon="email">
