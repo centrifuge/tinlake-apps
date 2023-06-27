@@ -39,9 +39,9 @@ export async function initOnboard(): Promise<Onboard> {
       },
     ],
     appMetadata: {
-      name: 'Select a Wallet',
-      icon: '<svg>My App Icon</svg>',
-      description: 'Please select a wallet to connect to this dapp:',
+      name: 'Tinlake | Centrifuge | Decentralized Asset Financing',
+      icon: 'https://legacy.tinlake.centrifuge.io/static/logo.svg',
+      description: 'Please select a wallet to connect to Tinlake:',
       recommendedInjectedWallets: [{ name: 'MetaMask', url: 'https://metmask.io/' }],
     },
     accountCenter: {
@@ -51,6 +51,9 @@ export async function initOnboard(): Promise<Onboard> {
       desktop: {
         enabled: false,
       },
+    },
+    connect: {
+      autoConnectLastWallet: true,
     },
   })
   return onboard

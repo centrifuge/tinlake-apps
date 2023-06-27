@@ -189,18 +189,16 @@ export function auth(
       }
 
       const walletSelected = await onboard.connectWallet()
+      if (walletSelected.length === 0) {
+        reject('auth rejected')
+        openAuthPromise = null
+        return
+      }
       if (tinlake) {
         dispatch(setAddressAndLoadData(tinlake!, debugAddress || walletSelected[0].accounts[0].address))
         const network = networkIdToName(walletSelected[0].chains[0].id)
         dispatch(setNetwork(network))
         dispatch(setProviderName(walletSelected[0].label))
-      }
-
-      if (!walletSelected) {
-        dispatch(setAuthState('aborted'))
-        reject('wallet not selected')
-        openAuthPromise = null
-        return
       }
 
       dispatch(setAuthState('authed'))
@@ -390,9 +388,6 @@ export function clear(): ThunkAction<Promise<void>, { auth: AuthState }, undefin
   }
 }
 
-// Hooks
-export const useAuth = (): AuthState => useSelector<any, AuthState>((state) => state.auth)
-
 export function walletSubscription(
   tinlake: ITinlake,
   debugAddress?: string
@@ -407,6 +402,7 @@ export function walletSubscription(
         const network = networkIdToName(wallet.chains[0].id)
         dispatch(setNetwork(network))
         dispatch(setProviderName(wallet.label))
+        // store the selected wallet name to be retrieved next time the app loads
         window.localStorage.setItem('selectedWallet', wallet.label || '')
       }
 
@@ -421,19 +417,10 @@ export function walletSubscription(
         const rpcProvider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
         tinlake.setProviderAndSigner(rpcProvider)
       }
-
-      // store the selected wallet name to be retrieved next time the app loads
-      if (state.wallets?.length === 0) {
-        dispatch(setAuthState(null))
-      }
-      // get the selectedWallet value from local storage
-      const previouslySelectedWallet = window.localStorage.getItem('selectedWallet')
-
-      // call wallet select with that value if it exists
-      if (previouslySelectedWallet !== null && previouslySelectedWallet !== '') {
-        dispatch(setAuthState('initialAuthing'))
-      }
     })
     return sub
   }
 }
+
+// Hooks
+export const useAuth = (): AuthState => useSelector<any, AuthState>((state) => state.auth)

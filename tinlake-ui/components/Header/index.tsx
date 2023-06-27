@@ -3,7 +3,7 @@ import { Box, Button, Layer } from 'grommet'
 import { Close as CloseIcon, Menu as MenuIcon } from 'grommet-icons'
 import Link from 'next/link'
 import Router, { useRouter } from 'next/router'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { PoolSelector } from '../../components/PoolSelector'
@@ -59,6 +59,15 @@ const Header: React.FC<Props> = (props: Props) => {
   const auth = useAuth()
   const [menuOpen, setMenuOpen] = React.useState(false)
   const tinlake = useTinlake()
+
+  useEffect(() => {
+    if (auth.address) return
+    ;(async () => {
+      const subscription = await dispatch(walletSubscription(tinlake))
+      // @ts-expect-error
+      return () => subscription?.unsubscribe()
+    })()
+  }, [])
 
   const connectAccount = async () => {
     try {
