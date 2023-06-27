@@ -163,7 +163,8 @@ function processTransaction(
 
     if (!onboard) throw new Error('Onboard not initialized')
 
-    const { wallet } = onboard.getState()
+    const onboardState = onboard.state.get()
+    const wallet = onboardState.wallets[0]
     const web3Provider = new ethers.providers.Web3Provider(wallet.provider)
     const fallbackProvider = new ethers.providers.FallbackProvider([web3Provider, rpcProvider])
     tinlake.setProviderAndSigner(fallbackProvider, web3Provider.getSigner(), web3Provider.provider)

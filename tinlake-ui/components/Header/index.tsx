@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { PoolSelector } from '../../components/PoolSelector'
 import config, { IpfsPools } from '../../config'
-import { clear, ensureAuthed, useAuth } from '../../ducks/auth'
+import { clear, ensureAuthed, useAuth, walletSubscription } from '../../ducks/auth'
 import { selectWalletTransactions, TransactionState } from '../../ducks/transactions'
 import { addThousandsSeparators } from '../../utils/addThousandsSeparators'
 import { getAddressLink } from '../../utils/etherscanLinkGenerator'
@@ -19,6 +19,7 @@ import { usePool } from '../../utils/usePool'
 import { usePortfolio } from '../../utils/usePortfolio'
 import { ClientOnlyRender } from '../ClientOnlyRender'
 import { RewardsBanner } from '../RewardsBanner'
+import { useTinlake } from '../TinlakeProvider'
 import { Tooltip } from '../Tooltip'
 import { Web3Wallet } from '../Web3Wallet'
 
@@ -51,16 +52,22 @@ const Header: React.FC<Props> = (props: Props) => {
 
   const transactions = useSelector<any, TransactionState>((state) => state.transactions)
 
-  const auth = useAuth()
   const address = useAddress()
   const { formattedAmount: CFGRewardFormatted, amount: CFGRewardAmount } = useCFGRewards()
   const portfolio = usePortfolio()
   const dispatch = useDispatch()
+  const auth = useAuth()
   const [menuOpen, setMenuOpen] = React.useState(false)
+  const tinlake = useTinlake()
 
   const connectAccount = async () => {
     try {
-      await dispatch(ensureAuthed())
+      dispatch(ensureAuthed(tinlake))
+      const subscription = dispatch(walletSubscription(tinlake))
+      return () => {
+        // @ts-expect-error
+        subscription.unsubscribe()
+      }
     } catch (e) {
       console.error(`authentication failed with Error ${e}`)
     }

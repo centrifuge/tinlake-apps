@@ -133,20 +133,17 @@ export function load(
     let onboard = getOnboard()
 
     // onboard is already initialized, only ensure values are correct and return
-    if (onboard) {
-      const state = onboard.getState()
-      const { network, wallet } = state
-      const address = debugAddress || state.address
-
+    const state = onboard?.state.get()
+    if (state && state.wallets.length > 0) {
+      const address = debugAddress || state.wallets[0].accounts[0].address
+      const wallet = state.wallets[0]
       if (address !== auth.address) {
         dispatch(setAddressAndLoadData(tinlake, address))
-      }
-      const networkName = networkIdToName(network)
-      if (networkName !== auth.network && networkName) {
-        dispatch(setNetwork(networkName))
+        dispatch(setNetwork(networkIdToName(state.chains[0].id)))
+        dispatch(setProviderName(wallet.label))
       }
 
-      if (tinlake.provider !== wallet.provider && wallet.provider) {
+      if (wallet && wallet?.provider) {
         const web3Provider = new ethers.providers.Web3Provider(wallet.provider)
         const rpcProvider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
         const fallbackProvider = new ethers.providers.FallbackProvider([web3Provider, rpcProvider])
@@ -154,8 +151,8 @@ export function load(
         tinlake.setProviderAndSigner(fallbackProvider, web3Provider.getSigner(), web3Provider.provider)
       }
 
-      if (wallet.name !== auth.providerName) {
-        dispatch(setProviderName(wallet.name))
+      if (wallet.label !== auth.providerName) {
+        dispatch(setProviderName(wallet.label))
       }
       if (address) {
         dispatch(setAuthState('authed'))
@@ -164,62 +161,17 @@ export function load(
     }
 
     // onboard not yet initialized, initialize now
-    onboard = initOnboard({
-      address: (address) => {
-        // TODO: when you switch your account in Metamask, this address hook get called, but the wallet subscription
-        // is not always being called. We should investigate whether this is an issue with the bnc-onboard library or
-        // our usage/implementation of the library.
-        dispatch(setAddressAndLoadData(tinlake, debugAddress || address))
-      },
-      network: (network) => {
-        const networkName = networkIdToName(network)
-        dispatch(setNetwork(networkName))
-      },
-      wallet: (wallet) => {
-        dispatch(setProviderName(wallet.name))
-
-        if (wallet.provider) {
-          const web3Provider = new ethers.providers.Web3Provider(wallet.provider)
-          const rpcProvider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
-          const fallbackProvider = new ethers.providers.FallbackProvider([web3Provider, rpcProvider])
-
-          tinlake.setProviderAndSigner(fallbackProvider, web3Provider.getSigner(), web3Provider.provider)
-        } else {
-          const rpcProvider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
-          tinlake.setProviderAndSigner(rpcProvider)
-        }
-
-        // store the selected wallet name to be retrieved next time the app loads
-        window.localStorage.setItem('selectedWallet', wallet.name || '')
-      },
-    })
-
-    // get the selectedWallet value from local storage
-    const previouslySelectedWallet = window.localStorage.getItem('selectedWallet')
-
-    // call wallet select with that value if it exists
-    if (previouslySelectedWallet !== null && previouslySelectedWallet !== '') {
-      dispatch(setAuthState('initialAuthing'))
-
-      const walletSelected = await onboard.walletSelect(previouslySelectedWallet)
-      if (!walletSelected) {
-        dispatch(setAuthState(null))
-        return
-      }
-
-      const walletChecked = await onboard.walletCheck()
-      if (!walletChecked) {
-        dispatch(setAuthState(null))
-        return
-      }
-    }
+    onboard = await initOnboard()
   }
 }
 
 let openAuthPromise: Promise<void> | null = null
 
 // auth opens onboard wallet select. If there is already an auth process, it blocks until that auth promise is resolved.
-export function auth(): ThunkAction<Promise<void>, { auth: AuthState }, undefined, Action> {
+export function auth(
+  tinlake?: ITinlake,
+  debugAddress?: string | null
+): ThunkAction<Promise<void>, { auth: AuthState }, undefined, Action> {
   return async (dispatch) => {
     if (openAuthPromise) {
       return await openAuthPromise
@@ -236,19 +188,18 @@ export function auth(): ThunkAction<Promise<void>, { auth: AuthState }, undefine
         return
       }
 
-      const walletSelected = await onboard.walletSelect()
+      const walletSelected = await onboard.connectWallet()
+      dispatch({ selectedWallet: walletSelected[0], type: SET_SELECTED_WALLET })
+      if (tinlake) {
+        dispatch(setAddressAndLoadData(tinlake!, debugAddress || walletSelected[0].accounts[0].address))
+        const network = networkIdToName(walletSelected[0].chains[0].id)
+        dispatch(setNetwork(network))
+        dispatch(setProviderName(walletSelected[0].label))
+      }
 
       if (!walletSelected) {
         dispatch(setAuthState('aborted'))
         reject('wallet not selected')
-        openAuthPromise = null
-        return
-      }
-
-      const walletChecked = await onboard.walletCheck()
-      if (!walletChecked) {
-        dispatch(setAuthState('aborted'))
-        reject('wallet not checked')
         openAuthPromise = null
         return
       }
@@ -264,24 +215,23 @@ export function auth(): ThunkAction<Promise<void>, { auth: AuthState }, undefine
 }
 
 // ensureAuthed checks whether status is authed or authing, otherwise initiates auth
-export function ensureAuthed(): ThunkAction<Promise<void>, { auth: AuthState }, undefined, Action> {
+export function ensureAuthed(
+  tinlake?: ITinlake,
+  debugAddress?: string | null
+): ThunkAction<Promise<void>, { auth: AuthState }, undefined, Action> {
   return async (dispatch, getState) => {
     const state = getState()
     if (openAuthPromise) {
       await openAuthPromise
     }
 
-    if (state.auth.authState === 'aborted' || state.auth.authState === null) {
-      return dispatch(auth())
+    if (state.auth.authState === 'aborted' || (state.auth.authState === null && tinlake)) {
+      return dispatch(auth(tinlake, debugAddress))
     }
 
     const onboard = getOnboard()
     if (!onboard) {
       throw new Error('onboard not found')
-    }
-    const walletChecked = await onboard!.walletCheck()
-    if (!walletChecked) {
-      throw new Error('wallet not checked')
     }
   }
 }
@@ -434,7 +384,7 @@ export function clear(): ThunkAction<Promise<void>, { auth: AuthState }, undefin
     }
 
     const onboard = getOnboard()
-    onboard?.walletReset()
+    await onboard?.disconnectWallet({ label: onboard.state.get().wallets[0].label })
     window.localStorage.removeItem('selectedWallet')
 
     dispatch({ type: CLEAR })
@@ -443,3 +393,48 @@ export function clear(): ThunkAction<Promise<void>, { auth: AuthState }, undefin
 
 // Hooks
 export const useAuth = (): AuthState => useSelector<any, AuthState>((state) => state.auth)
+
+export function walletSubscription(
+  tinlake: ITinlake,
+  debugAddress?: string
+): ThunkAction<Promise<any>, { auth: AuthState }, undefined, Action> {
+  return async (dispatch) => {
+    const onboard = getOnboard()
+    if (!onboard) return
+    const sub = onboard.state.select().subscribe((state) => {
+      if (state?.wallets?.length > 0) {
+        const wallet = state.wallets[0]
+        dispatch(setAddressAndLoadData(tinlake, debugAddress || wallet?.accounts[0]?.address))
+        const network = networkIdToName(wallet.chains[0].id)
+        dispatch(setNetwork(network))
+        dispatch(setProviderName(wallet.label))
+        window.localStorage.setItem('selectedWallet', wallet.label || '')
+      }
+
+      const wallet = state.wallets[0]
+      if (wallet && wallet?.provider) {
+        const web3Provider = new ethers.providers.Web3Provider(wallet.provider)
+        const rpcProvider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
+        const fallbackProvider = new ethers.providers.FallbackProvider([web3Provider, rpcProvider])
+
+        tinlake.setProviderAndSigner(fallbackProvider, web3Provider.getSigner(), web3Provider.provider)
+      } else {
+        const rpcProvider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
+        tinlake.setProviderAndSigner(rpcProvider)
+      }
+
+      // store the selected wallet name to be retrieved next time the app loads
+      if (state.wallets?.length === 0) {
+        dispatch(setAuthState(null))
+      }
+      // get the selectedWallet value from local storage
+      const previouslySelectedWallet = window.localStorage.getItem('selectedWallet')
+
+      // call wallet select with that value if it exists
+      if (previouslySelectedWallet !== null && previouslySelectedWallet !== '') {
+        dispatch(setAuthState('initialAuthing'))
+      }
+    })
+    return sub
+  }
+}

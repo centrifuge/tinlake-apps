@@ -1,20 +1,20 @@
-export function networkIdToName(id: number) {
+export function networkIdToName(id: string) {
   switch (id) {
-    case 1:
+    case `0x1`:
       return 'Mainnet'
-    case 2:
+    case `0x2`:
       return 'Morden'
-    case 3:
+    case `0x3`:
       return 'Ropsten'
-    case 4:
+    case `0x4`:
       return 'Rinkeby'
-    case 5:
+    case `0x5`:
       return 'Goerli'
-    case 42:
+    case `0x2a`:
       return 'Kovan'
-    case 100:
+    case `0x64`:
       return 'XDai'
-    case 99:
+    case `0x63`:
       return 'Local'
   }
   return null
@@ -23,21 +23,21 @@ export function networkIdToName(id: number) {
 export function networkNameToId(name: string) {
   switch (name) {
     case 'Mainnet':
-      return 1
+      return '0x1'
     case 'Morden':
-      return 2
+      return '0x2'
     case 'Ropsten':
-      return 3
+      return '0x3'
     case 'Rinkeby':
-      return 4
+      return '0x4'
     case 'Goerli':
-      return 5
+      return '0x5'
     case 'Kovan':
-      return 42
+      return '0x2a'
     case 'XDai':
-      return 100
+      return '0x64'
     case 'Local':
-      return 99
+      return '0x63'
     default:
       return null
   }

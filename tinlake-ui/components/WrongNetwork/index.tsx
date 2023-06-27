@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { getOnboard } from '../../services/onboard'
 import Alert from '../Alert'
 
 interface Props {
@@ -8,10 +7,6 @@ interface Props {
 }
 
 class WrongNetwork extends React.Component<Props> {
-  componentDidMount() {
-    getOnboard()?.walletCheck()
-  }
-
   render() {
     const { expected, actual } = this.props
 
