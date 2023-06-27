@@ -67,6 +67,7 @@ const Header: React.FC<Props> = (props: Props) => {
       // @ts-expect-error
       return () => subscription?.unsubscribe()
     })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const connectAccount = async () => {
