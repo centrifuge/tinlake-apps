@@ -189,7 +189,6 @@ export function auth(
       }
 
       const walletSelected = await onboard.connectWallet()
-      dispatch({ selectedWallet: walletSelected[0], type: SET_SELECTED_WALLET })
       if (tinlake) {
         dispatch(setAddressAndLoadData(tinlake!, debugAddress || walletSelected[0].accounts[0].address))
         const network = networkIdToName(walletSelected[0].chains[0].id)
