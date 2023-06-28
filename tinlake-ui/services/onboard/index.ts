@@ -1,51 +1,64 @@
-import Onboard from 'bnc-onboard'
-import { API, Subscriptions } from 'bnc-onboard/dist/src/interfaces'
+import { default as init, default as Onboard } from '@web3-onboard/core'
+import injectedModule from '@web3-onboard/injected-wallets'
+import ledgerModule from '@web3-onboard/ledger'
+import portisModule from '@web3-onboard/portis'
+import walletConnectModule from '@web3-onboard/walletconnect'
 import config from '../../config'
-import { networkNameToId } from '../../utils/networkNameResolver'
 
-const wallets = [
-  {
-    walletName: 'metamask',
-  },
-  {
-    walletName: 'portis',
-    apiKey: config.portisApiKey,
-    label: 'Login with Portis',
-  },
-  {
-    walletName: 'ledger',
-    rpcUrl: config.rpcUrl,
-  },
-  {
-    walletName: 'walletConnect',
-    infuraKey: config.infuraKey,
-  },
-]
+type Onboard = ReturnType<typeof init>
 
-let onboard: API | null = null
+const injected = injectedModule()
+const portis = portisModule({
+  apiKey: config.portisApiKey,
+})
+const ledger = ledgerModule()
+const walletConnect = walletConnectModule({ projectId: 'e56e37e297013fe8064af18b0361c3e4', version: 2 })
+
+let onboard: Onboard | null = null
 
 // initOnboard returns onboard singleton. Onboard is only initialized once and stored in global state.
-export function initOnboard(subscriptions?: Subscriptions): API {
+export async function initOnboard(): Promise<Onboard> {
   if (onboard) {
     return onboard
   }
 
-  onboard = Onboard({
-    subscriptions,
-    networkId: networkNameToId(config.network)!,
-    walletSelect: { wallets },
-    walletCheck: [
-      { checkName: 'connect' },
-      { checkName: 'derivationPath' },
-      { checkName: 'accounts' },
-      { checkName: 'network' },
+  onboard = init({
+    wallets: [injected, ledger, walletConnect, walletConnect, portis],
+    chains: [
+      {
+        id: '1',
+        token: 'ETH',
+        label: 'Ethereum Mainnet',
+        rpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+      },
+      {
+        id: '5',
+        token: 'goerliETH',
+        label: 'Ethereum Goerli Testnet',
+        rpcUrl: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+      },
     ],
-    hideBranding: true,
+    appMetadata: {
+      name: 'Tinlake | Centrifuge | Decentralized Asset Financing',
+      icon: 'https://legacy.tinlake.centrifuge.io/static/logo.svg',
+      description: 'Please select a wallet to connect to Tinlake:',
+      recommendedInjectedWallets: [{ name: 'MetaMask', url: 'https://metmask.io/' }],
+    },
+    accountCenter: {
+      mobile: {
+        enabled: false,
+      },
+      desktop: {
+        enabled: false,
+      },
+    },
+    connect: {
+      autoConnectLastWallet: true,
+    },
   })
-
   return onboard
 }
 
-export function getOnboard(): API | null {
+export function getOnboard(): Onboard | null {
   return onboard
 }

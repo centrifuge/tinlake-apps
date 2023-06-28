@@ -1,7 +1,16 @@
 require('dotenv').config()
 require('ts-node').register({ project: './tsconfig.json', compilerOptions: { module: 'CommonJS' }, files: true })
+const withTM = require('next-transpile-modules')([
+  '@web3-onboard/injected-wallets',
+  '@web3-onboard/core',
+  '@web3-onboard/common',
+  '@web3-onboard/ledger',
+  '@web3-onboard/portis',
+  '@web3-onboard/walletconnect',
+  '@web3-onboard/react',
+])
 
-module.exports = {
+module.exports = withTM({
   webpack(config) {
     // Further custom configuration here
     return {
@@ -31,4 +40,4 @@ module.exports = {
   experimental: {
     exportTrailingSlash: false,
   },
-}
+})
