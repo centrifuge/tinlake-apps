@@ -202,7 +202,7 @@ export function AdminActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
       return this.pending(
         this.contract('POOL_ADMIN').addWriteOffGroups(
           writeOffGroups.map((g) => g.rate.toString()),
-          writeOffGroups.map((g) => g.writeOffPercentage.toString()),
+          writeOffGroups.map((g) => g.percentage.toString()),
           writeOffGroups.map((g) => g.overdueDays.toString()),
           this.overrides
         )
@@ -237,13 +237,11 @@ export function AdminActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         return new BN(10).pow(new BN(27)).sub(new BN(percentage.toString()))
       } else if (navFeed.writeOffGroups) {
         const writeOffGroups = await this.getWriteOffGroups()
+        let { percentage } = writeOffGroups[rateGroup.sub(new BN(1000)).toNumber()]
+        if (percentage) {
+          percentage = new BN(10).pow(new BN(27)).sub(new BN(percentage.toString()))
 
-        const writeOffGroup = writeOffGroups.find((group) => rateGroup.eq(group.rate))
-
-        if (writeOffGroup) {
-          const writeOffPercentage = new BN(10).pow(new BN(27)).sub(writeOffGroup.writeOffPercentage) || new BN(0)
-
-          return writeOffPercentage
+          return percentage
         }
 
         return new BN(0)
@@ -302,7 +300,7 @@ export type IRiskGroup = {
 
 export type IWriteOffGroup = {
   rate: BN
-  writeOffPercentage: BN
+  percentage: BN
   overdueDays: BN
 }
 
