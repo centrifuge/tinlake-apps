@@ -2,6 +2,7 @@ import { Loan } from '@centrifuge/tinlake-js'
 import BN from 'bn.js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
+import { useTinlake } from '../components/TinlakeProvider'
 import { Pool } from '../config'
 import { Call, multicall } from './multicall'
 
@@ -19,6 +20,8 @@ const CONTRACTS_WITH_WRITEOFFS_METHOD = [
 ]
 
 export function useAssetListWriteOffStatus(loans: Loan[], addresses: Pool['addresses']) {
+  const tinlake = useTinlake()
+
   return useQuery(['loansWithWriteOffStatus', addresses.ROOT_CONTRACT], async () => {
     try {
       const feedContractAddress = addresses.FEED as string
@@ -68,13 +71,13 @@ export function useAssetListWriteOffStatus(loans: Loan[], addresses: Pool['addre
         }))
       }
 
-      const writeOffGroupCalls: Call[] = Array.from(Array(100).keys()).map((index) => ({
-        target: feedContractAddress,
-        call: ['writeOffGroups(uint256)(uint128)', index],
-        returns: [[index.toString(), toBN]],
-      }))
-
-      const writeOffGroups = await multicall(writeOffGroupCalls)
+      const writeOffGroups = (await tinlake.getWriteOffGroups()).reduce<Record<string, BN>>(
+        (acc, writeOffGroup, index) => {
+          acc[index] = writeOffGroup.percentage
+          return acc
+        },
+        {}
+      )
 
       const loansWithWriteOffPercentages = rateGroupsWithLoanId
         .map((rateGroup) => {

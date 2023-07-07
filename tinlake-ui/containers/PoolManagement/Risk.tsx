@@ -97,13 +97,13 @@ const Risk: React.FC<Props> = (props: Props) => {
   const addWriteOffGroup = () => {
     const newWriteOffGroup = {
       rate: new BN('1000000002378234398782343987'),
-      writeOffPercentage: new BN(0),
+      percentage: new BN(0),
       overdueDays: new BN(0),
     }
     setWriteOffGroups([...writeOffGroups, newWriteOffGroup])
   }
 
-  const updateWriteOffGroup = (group: number, key: 'writeOffPercentage' | 'rate' | 'overdueDays', value: string) => {
+  const updateWriteOffGroup = (group: number, key: 'percentage' | 'rate' | 'overdueDays', value: string) => {
     const newWriteOffGroups = writeOffGroups
     newWriteOffGroups[group][key] =
       key === 'rate'
@@ -115,7 +115,7 @@ const Risk: React.FC<Props> = (props: Props) => {
   }
 
   const saveWriteOffGroups = async () => {
-    console.log(writeOffGroups[0].writeOffPercentage.toString())
+    console.log(writeOffGroups[0].percentage.toString())
     const txId = await props.createTransaction(
       `Save ${writeOffGroups.length} write-off group${writeOffGroups.length > 1 ? 's' : ''}`,
       'addWriteOffGroups',
@@ -301,11 +301,11 @@ const Risk: React.FC<Props> = (props: Props) => {
                       <TableCell>
                         <FormField margin={{ right: 'small' }}>
                           <NumberInput
-                            value={baseToDisplay(Fixed27Base.sub(writeOffGroup.writeOffPercentage || new BN(0)), 25)}
+                            value={baseToDisplay(Fixed27Base.sub(writeOffGroup.percentage || new BN(0)), 25)}
                             suffix="%"
                             max={100}
                             precision={0}
-                            onValueChange={({ value }) => updateWriteOffGroup(id, 'writeOffPercentage', value)}
+                            onValueChange={({ value }) => updateWriteOffGroup(id, 'percentage', value)}
                             plain
                           />
                         </FormField>

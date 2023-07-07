@@ -18,7 +18,8 @@ export async function calculateWriteOffPercentage(tinlake: ITinlake, loanId: num
     }
 
     return writeOffPercentage.div(new BN(10).pow(new BN(25))).toString()
-  } catch {
+  } catch (e) {
+    console.log(`Oops: ${e}`)
     return '0'
   }
 }
