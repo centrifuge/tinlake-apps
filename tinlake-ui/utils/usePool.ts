@@ -235,7 +235,7 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
     },
   ]
 
-  const maxRiskGroups = 100
+  const maxRiskGroups = 300
   for (let i = 0; i < maxRiskGroups; i += 1) {
     calls.push(
       {
@@ -270,7 +270,7 @@ export async function getPool(ipfsPools: IpfsPools, poolId: string, address?: st
       returns: [[`discountRate`, toBN]],
     })
 
-    const maxRiskGroups = 100
+    const maxRiskGroups = 300
     for (let i = 0; i < maxRiskGroups; i += 1) {
       calls.push({
         target: pool.addresses.FEED,
