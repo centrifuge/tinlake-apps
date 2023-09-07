@@ -2,7 +2,6 @@ import { DisplayField } from '@centrifuge/axis-display-field'
 import { baseToDisplay } from '@centrifuge/tinlake-js'
 import BN from 'bn.js'
 import { Box, Button, Heading } from 'grommet'
-import { FormNextLink } from 'grommet-icons'
 import Link from 'next/link'
 import * as React from 'react'
 import { useSelector } from 'react-redux'
@@ -20,7 +19,6 @@ import { useAddress } from '../../utils/useAddress'
 import { useMedia } from '../../utils/useMedia'
 import { usePools } from '../../utils/usePools'
 import { TokenBalance, usePortfolio } from '../../utils/usePortfolio'
-import { investorTransactions } from './transactionList'
 
 interface Props {
   ipfsPools: IpfsPools
@@ -124,15 +122,6 @@ const Portfolio: React.FC<Props> = (props: Props) => {
               />
             </Box>
           )}
-          {address && hasBalance && (
-            <Button
-              label="Download transactions"
-              plain
-              onClick={() => investorTransactions(address)}
-              icon={<FormNextLink style={{ transform: 'rotate(90deg)' }} />}
-              size="small"
-            />
-          )}
         </Box>
       </Box>
       <Box direction="row" gap="small" margin={{ bottom: 'large' }} justify="center">
@@ -210,7 +199,7 @@ const Portfolio: React.FC<Props> = (props: Props) => {
 
           <Box margin={{ top: 'medium', left: 'auto', right: 'auto' }}>
             <Link href="/">
-              <Button label="Browse pools" plain icon={<FormNextLink />} size="small" />
+              <Button label="Explore further investment opportunities" secondary size="small" />
             </Link>
           </Box>
         </Stack>
