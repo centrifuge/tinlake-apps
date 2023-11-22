@@ -204,7 +204,7 @@ const LoanData: React.FC<Props> = (props: Props) => {
                           isBTPool && writeOffPercentageData === '100'
                             ? toPrecision(
                                 baseToDisplay(
-                                  new BN(loanData?.borrowsAggregatedAmount || new BN(0)).sub(
+                                  new BN(loanData?.borrowsAggregatedAmount || new BN(0)).add(
                                     props.loan?.debt || new BN(0)
                                   ) || new BN(0),
                                   18
@@ -217,6 +217,17 @@ const LoanData: React.FC<Props> = (props: Props) => {
                       </LoadingValue>
                     </TableCell>
                   </TableRow>
+                  {isBTPool && writeOffPercentageData === '100' && (
+                    <TableRow>
+                      <TableCell scope="row">Written off</TableCell>
+                      <TableCell style={{ textAlign: 'end' }}>
+                        <LoadingValue done={!isLoanDataLoading}>
+                          {addThousandsSeparators(toPrecision(baseToDisplay(props.loan?.debt || new BN(0), 18), 2))}{' '}
+                          {props.poolConfig.metadata.currencySymbol || 'DAI'}
+                        </LoadingValue>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Box>
