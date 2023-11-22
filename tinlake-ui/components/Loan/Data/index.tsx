@@ -13,6 +13,7 @@ import { getAddressLink } from '../../../utils/etherscanLinkGenerator'
 import { Fixed27Base } from '../../../utils/ratios'
 import { toPrecision } from '../../../utils/toPrecision'
 import { Asset } from '../../../utils/useAsset'
+import { BT_POOL_FEED_CONTRACTS } from '../../../utils/useAssetListWriteOffStatus'
 import { useLoan } from '../../../utils/useLoan'
 import { RiskGroup, usePool } from '../../../utils/usePool'
 import { useWriteOffPercentage } from '../../../utils/useWriteOffPercentage'
@@ -94,6 +95,8 @@ const LoanData: React.FC<Props> = (props: Props) => {
       props.loan.borrower,
     ])
   }
+
+  const isBTPool = BT_POOL_FEED_CONTRACTS.includes(props.poolConfig.addresses.FEED.toLowerCase())
 
   return (
     <>
@@ -194,8 +197,16 @@ const LoanData: React.FC<Props> = (props: Props) => {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell scope="row">Total repaid</TableCell>
-                    <TableCell style={{ textAlign: 'end' }}>
+                    <TableCell
+                      scope="row"
+                      border={isBTPool && writeOffPercentageData === '0' && { color: 'transparent' }}
+                    >
+                      Total repaid
+                    </TableCell>
+                    <TableCell
+                      style={{ textAlign: 'end' }}
+                      border={isBTPool && writeOffPercentageData === '0' && { color: 'transparent' }}
+                    >
                       <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
                           toPrecision(baseToDisplay(loanData?.repaysAggregatedAmount || new BN(0), 18), 2)
@@ -204,6 +215,19 @@ const LoanData: React.FC<Props> = (props: Props) => {
                       </LoadingValue>
                     </TableCell>
                   </TableRow>
+                  {isBTPool && writeOffPercentageData === '100' && (
+                    <TableRow>
+                      <TableCell scope="row" border={{ color: 'transparent' }}>
+                        Written off
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'end' }} border={{ color: 'transparent' }}>
+                        <LoadingValue done={!isLoanDataLoading}>
+                          {addThousandsSeparators(toPrecision(baseToDisplay(props.loan?.debt || new BN(0), 18), 2))}{' '}
+                          {props.poolConfig.metadata.currencySymbol || 'DAI'}
+                        </LoadingValue>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Box>

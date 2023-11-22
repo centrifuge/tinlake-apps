@@ -19,6 +19,13 @@ const CONTRACTS_WITH_WRITEOFFS_METHOD = [
   '0x468eb2408c6f24662a291892550952eb0d70b707',
 ]
 
+export const BT_POOL_FEED_CONTRACTS = [
+  '0x60eeba86ce045d54ce625d71a5c2baebfb2e46e9',
+  '0x479506bff98b18d62e62862a02a55047ca6583fa',
+  '0xea5e577df382889497534a0258345e78bbd4e31d',
+  '0xeff42b6d4527a6a2fb429082386b34f5d4050b2c',
+]
+
 export function useAssetListWriteOffStatus(loans: Loan[], addresses: Pool['addresses']) {
   const tinlake = useTinlake()
 
@@ -68,6 +75,21 @@ export function useAssetListWriteOffStatus(loans: Loan[], addresses: Pool['addre
         return loans.map((loan) => ({
           ...loan,
           status: writeOffsWithLoanId[loan.loanId]?.eq(new BN(100)) ? 'repaid' : loan.status,
+        }))
+      }
+
+      if (BT_POOL_FEED_CONTRACTS.includes(feedContractAddress.toLowerCase())) {
+        const isLoanWrittenOffCalls: Call[] = loans.map(({ loanId }) => ({
+          target: feedContractAddress,
+          call: ['isLoanWrittenOff(uint256)(bool)', loanId],
+          returns: [[loanId]],
+        }))
+
+        const isLoansWrittenOff = (await multicall(isLoanWrittenOffCalls)) as { [key: string]: BN }
+
+        return loans.map((loan) => ({
+          ...loan,
+          status: isLoansWrittenOff[loan.loanId] ? 'repaid' : loan.status,
         }))
       }
 
