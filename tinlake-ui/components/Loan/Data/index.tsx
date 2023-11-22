@@ -13,6 +13,7 @@ import { getAddressLink } from '../../../utils/etherscanLinkGenerator'
 import { Fixed27Base } from '../../../utils/ratios'
 import { toPrecision } from '../../../utils/toPrecision'
 import { Asset } from '../../../utils/useAsset'
+import { BT_POOL_FEED_CONTRACTS } from '../../../utils/useAssetListWriteOffStatus'
 import { useLoan } from '../../../utils/useLoan'
 import { RiskGroup, usePool } from '../../../utils/usePool'
 import { useWriteOffPercentage } from '../../../utils/useWriteOffPercentage'
@@ -94,6 +95,8 @@ const LoanData: React.FC<Props> = (props: Props) => {
       props.loan.borrower,
     ])
   }
+
+  const isBTPool = BT_POOL_FEED_CONTRACTS.includes(props.poolConfig.addresses.FEED.toLowerCase())
 
   return (
     <>
@@ -198,7 +201,17 @@ const LoanData: React.FC<Props> = (props: Props) => {
                     <TableCell style={{ textAlign: 'end' }}>
                       <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
-                          toPrecision(baseToDisplay(loanData?.repaysAggregatedAmount || new BN(0), 18), 2)
+                          isBTPool && writeOffPercentageData === '100'
+                            ? toPrecision(
+                                baseToDisplay(
+                                  new BN(loanData?.borrowsAggregatedAmount || new BN(0)).sub(
+                                    props.loan?.debt || new BN(0)
+                                  ) || new BN(0),
+                                  18
+                                ),
+                                2
+                              )
+                            : toPrecision(baseToDisplay(loanData?.repaysAggregatedAmount || new BN(0), 18), 2)
                         )}{' '}
                         {props.poolConfig.metadata.currencySymbol || 'DAI'}
                       </LoadingValue>

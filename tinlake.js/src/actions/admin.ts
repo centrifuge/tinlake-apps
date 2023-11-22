@@ -254,6 +254,10 @@ export function AdminActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
       return await this.toBN(this.contract('PILE').loanRates(loanId))
     }
 
+    getIsLoanWrittenOff = async (loanId: number) => {
+      return await this.contract('FEED').isLoanWrittenOff(loanId)
+    }
+
     writeOff = async (loanId: number) => {
       return this.pending(this.contract('FEED').writeOff(loanId, this.overrides))
     }
@@ -347,6 +351,7 @@ export type IAdminActions = {
   getWriteOffPercentage(rateGroup: BN): Promise<BN>
   writeOff(loanId: number): Promise<PendingTransaction>
   getRateGroup(loanId: number): Promise<BN>
+  getIsLoanWrittenOff(loanId: number): Promise<boolean>
   closePool(): Promise<PendingTransaction>
   unclosePool(): Promise<PendingTransaction>
 }
