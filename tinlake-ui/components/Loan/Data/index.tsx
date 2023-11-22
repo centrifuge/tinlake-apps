@@ -199,7 +199,6 @@ const LoanData: React.FC<Props> = (props: Props) => {
                   <TableRow>
                     <TableCell scope="row">Total repaid</TableCell>
                     <TableCell style={{ textAlign: 'end' }}>
-                      {console.log(loanData?.threshold.toString())}
                       <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
                           toPrecision(baseToDisplay(loanData?.repaysAggregatedAmount || new BN(0), 18), 2)
@@ -208,7 +207,6 @@ const LoanData: React.FC<Props> = (props: Props) => {
                       </LoadingValue>
                     </TableCell>
                   </TableRow>
-                  {console.log(loanData)}
                   {isBTPool && writeOffPercentageData === '100' && (
                     <TableRow>
                       <TableCell scope="row">Written off</TableCell>
