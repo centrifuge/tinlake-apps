@@ -197,8 +197,16 @@ const LoanData: React.FC<Props> = (props: Props) => {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell scope="row">Total repaid</TableCell>
-                    <TableCell style={{ textAlign: 'end' }}>
+                    <TableCell
+                      scope="row"
+                      border={isBTPool && writeOffPercentageData === '0' && { color: 'transparent' }}
+                    >
+                      Total repaid
+                    </TableCell>
+                    <TableCell
+                      style={{ textAlign: 'end' }}
+                      border={isBTPool && writeOffPercentageData === '0' && { color: 'transparent' }}
+                    >
                       <LoadingValue done={!isLoanDataLoading}>
                         {addThousandsSeparators(
                           toPrecision(baseToDisplay(loanData?.repaysAggregatedAmount || new BN(0), 18), 2)
@@ -209,8 +217,10 @@ const LoanData: React.FC<Props> = (props: Props) => {
                   </TableRow>
                   {isBTPool && writeOffPercentageData === '100' && (
                     <TableRow>
-                      <TableCell scope="row">Written off</TableCell>
-                      <TableCell style={{ textAlign: 'end' }}>
+                      <TableCell scope="row" border={{ color: 'transparent' }}>
+                        Written off
+                      </TableCell>
+                      <TableCell style={{ textAlign: 'end' }} border={{ color: 'transparent' }}>
                         <LoadingValue done={!isLoanDataLoading}>
                           {addThousandsSeparators(toPrecision(baseToDisplay(props.loan?.debt || new BN(0), 18), 2))}{' '}
                           {props.poolConfig.metadata.currencySymbol || 'DAI'}
