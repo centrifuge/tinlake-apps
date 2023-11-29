@@ -179,7 +179,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         amount,
       ])
 
-      const owner = (await this.getProxyOwnerByLoan(loanId)).toString()
+      const owner = this.contract('TITLE').ownerOf(loanId).toString()
 
       if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
@@ -213,7 +213,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         loanId,
       ])
 
-      const owner = (await this.getProxyOwnerByLoan(loanId)).toString()
+      const owner = this.contract('TITLE').ownerOf(loanId).toString()
 
       if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
@@ -251,7 +251,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         loanId,
       ])
 
-      const owner = (await this.getProxyOwnerByLoan(loanId)).toString()
+      const owner = this.contract('TITLE').ownerOf(loanId).toString()
 
       if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
