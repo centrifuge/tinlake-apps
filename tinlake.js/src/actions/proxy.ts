@@ -179,9 +179,20 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         amount,
       ])
 
-      if (this.contractAddresses['BORROWER_PROXY']) {
+      const owner = (await this.getProxyOwnerByLoan(loanId)).toString()
+
+      if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 1500000,
+          })
+        )
+      }
+
+      if (this.contractAddresses['BORROWER_PROXY'] && owner !== this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('PROXY', proxyAddress).execute(this.contract('LEGACY_ACTIONS').address, encoded, {
             ...this.overrides,
             gasLimit: 1500000,
           })
@@ -202,11 +213,22 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         loanId,
       ])
 
-      if (this.contractAddresses['BORROWER_PROXY']) {
+      const owner = (await this.getProxyOwnerByLoan(loanId)).toString()
+
+      if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
             ...this.overrides,
             gasLimit: 550000,
+          })
+        )
+      }
+
+      if (this.contractAddresses['BORROWER_PROXY'] && owner !== this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('PROXY', proxyAddress).execute(this.contract('LEGACY_ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 1500000,
           })
         )
       }
@@ -229,9 +251,20 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         loanId,
       ])
 
-      if (this.contractAddresses['BORROWER_PROXY']) {
+      const owner = (await this.getProxyOwnerByLoan(loanId)).toString()
+
+      if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
+            ...this.overrides,
+            gasLimit: 1500000,
+          })
+        )
+      }
+
+      if (this.contractAddresses['BORROWER_PROXY'] && owner !== this.contractAddresses['BORROWER_PROXY']) {
+        return this.pending(
+          this.contract('PROXY', proxyAddress).execute(this.contract('LEGACY_ACTIONS').address, encoded, {
             ...this.overrides,
             gasLimit: 1500000,
           })
