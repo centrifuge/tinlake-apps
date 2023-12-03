@@ -179,9 +179,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         amount,
       ])
 
-      const owner = this.contract('TITLE').ownerOf(loanId).toString()
-
-      if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
+      if (this.contractAddresses['BORROWER_PROXY'] && proxyAddress === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
             ...this.overrides,
@@ -190,7 +188,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         )
       }
 
-      if (this.contractAddresses['BORROWER_PROXY'] && owner !== this.contractAddresses['BORROWER_PROXY']) {
+      if (this.contractAddresses['BORROWER_PROXY'] && proxyAddress !== this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('PROXY', proxyAddress).execute(this.contract('LEGACY_ACTIONS').address, encoded, {
             ...this.overrides,
@@ -213,9 +211,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         loanId,
       ])
 
-      const owner = this.contract('TITLE').ownerOf(loanId).toString()
-
-      if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
+      if (this.contractAddresses['BORROWER_PROXY'] && proxyAddress === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
             ...this.overrides,
@@ -224,7 +220,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         )
       }
 
-      if (this.contractAddresses['BORROWER_PROXY'] && owner !== this.contractAddresses['BORROWER_PROXY']) {
+      if (this.contractAddresses['BORROWER_PROXY'] && proxyAddress !== this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('PROXY', proxyAddress).execute(this.contract('LEGACY_ACTIONS').address, encoded, {
             ...this.overrides,
@@ -251,9 +247,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         loanId,
       ])
 
-      const owner = this.contract('TITLE').ownerOf(loanId).toString()
-
-      if (this.contractAddresses['BORROWER_PROXY'] && owner === this.contractAddresses['BORROWER_PROXY']) {
+      if (this.contractAddresses['BORROWER_PROXY'] && proxyAddress === this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('BORROWER_PROXY').userExecute(this.contract('ACTIONS').address, encoded, {
             ...this.overrides,
@@ -262,7 +256,7 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
         )
       }
 
-      if (this.contractAddresses['BORROWER_PROXY'] && owner !== this.contractAddresses['BORROWER_PROXY']) {
+      if (this.contractAddresses['BORROWER_PROXY'] && proxyAddress !== this.contractAddresses['BORROWER_PROXY']) {
         return this.pending(
           this.contract('PROXY', proxyAddress).execute(this.contract('LEGACY_ACTIONS').address, encoded, {
             ...this.overrides,

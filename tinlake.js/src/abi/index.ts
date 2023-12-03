@@ -61,4 +61,6 @@ export default {
   BORROWER_PROXY: contractAbiBorrowerProxy,
   ASSET_NFT: contractAbiNFTRegistry,
   MINTER: contractAbiNFTMinter,
+  LEGACY_ACTIONS: contractAbiActions,
+  LEGACY_PROXY_REGISTRY: contractAbiProxyRegistry,
 } as ContractAbis
