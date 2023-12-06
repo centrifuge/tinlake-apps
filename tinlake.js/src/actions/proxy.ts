@@ -315,7 +315,7 @@ export type IProxyActions = {
     nftRegistryAddress: string,
     price: string,
     riskGroup: string,
-    maturityDate?: string
+    maturityDate?: number
   ): Promise<PendingTransaction>
   proxyTransferIssue(proxyAddr: string, nftRegistryAddr: string, tokenId: string): Promise<PendingTransaction>
   proxyLockBorrowWithdraw(proxyAddr: string, loanId: string, amount: string, usr: string): Promise<PendingTransaction>
