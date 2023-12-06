@@ -87,21 +87,16 @@ export function ProxyActions<ActionsBase extends Constructor<TinlakeParams>>(Bas
       maturityDate?: number
     ) => {
       const proxy = this.contract('BORROWER_PROXY')
-      let encoded = this.contract('ACTIONS').interface.encodeFunctionData('mintIssuePriceLock', [
-        minterAddress,
-        nftRegistryAddress,
-        price,
-        riskGroup,
-      ])
+      let encoded = this.contract('ACTIONS').interface.encodeFunctionData(
+        'mintIssuePriceLock(address,address,uint256,uint256)',
+        [minterAddress, nftRegistryAddress, price, riskGroup]
+      )
 
       if (maturityDate) {
-        encoded = this.contract('ACTIONS').interface.encodeFunctionData('mintIssuePriceLock', [
-          minterAddress,
-          nftRegistryAddress,
-          price,
-          riskGroup,
-          maturityDate,
-        ])
+        encoded = this.contract('ACTIONS').interface.encodeFunctionData(
+          'mintIssuePriceLock(address,address,uint256,uint256,uint256)',
+          [minterAddress, nftRegistryAddress, price, riskGroup, maturityDate]
+        )
       }
 
       return this.pending(
