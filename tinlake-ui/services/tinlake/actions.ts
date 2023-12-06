@@ -503,9 +503,10 @@ export async function proxyBorrowerMintIssuePrice(
   minterAddress: string,
   nftRegistryAddress: string,
   price: string,
-  riskGroup: string
+  riskGroup: string,
+  maturityDate?: number
 ): Promise<PendingTransaction> {
-  return tinlake.proxyBorrowerMintIssuePrice(minterAddress, nftRegistryAddress, price, riskGroup)
+  return tinlake.proxyBorrowerMintIssuePrice(minterAddress, nftRegistryAddress, price, riskGroup, maturityDate)
 }
 
 export async function proxyTransferCurrency(
