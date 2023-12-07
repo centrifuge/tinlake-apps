@@ -103,6 +103,7 @@ const CreateNFT: React.FC = () => {
               {tinlake.contractAddresses['LEGACY_ACTIONS'] && (
                 <FormField label="Maturity Date">
                   <DateInput
+                    format="mm/dd/yyyy"
                     value={maturityDate}
                     onChange={(event: any) => {
                       console.log(event.value)
