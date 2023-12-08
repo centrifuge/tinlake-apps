@@ -83,7 +83,7 @@ const CreateNFT: React.FC = () => {
             </Box>
 
             <Grid columns={[1, 2]} equalColumns gap={100} maxWidth={700}>
-              <FormField label="NFT Value / Max draw down (in USD)">
+              <FormField label="Collateral Value">
                 <NumberInput
                   suffix=" USD"
                   value={baseToDisplay(value, 18)}
