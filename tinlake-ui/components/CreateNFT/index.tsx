@@ -10,10 +10,6 @@ import { Grid } from '../Layout'
 import NumberInput from '../NumberInput'
 import { useTinlake } from '../TinlakeProvider'
 
-// const convertDateToTimestampInSeconds = (date: Date): number => {
-//   return Math.floor(date.getTime() / 1000).toString()
-// }
-
 const CreateNFT: React.FC = () => {
   const DAYS = 24 * 60 * 60 * 1000
   const tinlake = useTinlake()
@@ -83,7 +79,13 @@ const CreateNFT: React.FC = () => {
             </Box>
 
             <Grid columns={[1, 2]} equalColumns gap={100} maxWidth={700}>
-              <FormField label="Collateral Value">
+              <FormField
+                label={
+                  tinlake.contractAddresses['LEGACY_ACTIONS']
+                    ? 'Collateral Value'
+                    : 'NFT Value / Max draw down (in USD)'
+                }
+              >
                 <NumberInput
                   suffix=" USD"
                   value={baseToDisplay(value, 18)}
