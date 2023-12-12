@@ -303,10 +303,6 @@ export const flagsConfig = {
     type: 'checkbox',
     default: params.get('show_close_epoch') != null,
   },
-  allowMultipleBorrow: {
-    type: 'checkbox',
-    default: params.get('allowMultipleBorrow') != null,
-  },
   disableInvestLimit: {
     type: 'checkbox',
     default: params.get('disableLimit') != null,

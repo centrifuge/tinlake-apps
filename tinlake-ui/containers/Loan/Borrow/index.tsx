@@ -5,7 +5,6 @@ import { Decimal } from 'decimal.js-light'
 import { Box, Button } from 'grommet'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { useDebugFlags } from '../../../components/DebugFlags'
 import { useTinlake } from '../../../components/TinlakeProvider'
 import { Pool } from '../../../config'
 import { ensureAuthed } from '../../../ducks/auth'
@@ -27,8 +26,6 @@ const LoanBorrow: React.FC<Props> = (props: Props) => {
   const { data: poolData } = usePool(tinlake.contractAddresses.ROOT_CONTRACT)
   const { data: epochData } = useEpoch()
   const [borrowAmount, setBorrowAmount] = React.useState<string>('')
-
-  const { allowMultipleBorrow } = useDebugFlags()
 
   const [status, , setTxId] = useTransactionState()
 
@@ -60,13 +57,11 @@ const LoanBorrow: React.FC<Props> = (props: Props) => {
 
   const ceilingSet = props.loan.principal.toString() !== '0'
   const availableFunds = (poolData && poolData.availableFunds.toString()) || '0'
-  const borrowedAlready =
-    !allowMultipleBorrow && (new BN(props.loan.debt).isZero() === false || props.loan.status !== 'NFT locked')
 
   const isBlockedState = epochData ? epochData.isBlockedState : false
 
   const [error, setError] = React.useState<string | undefined>(undefined)
-  const borrowEnabled = (ceilingSet && !borrowedAlready && !isBlockedState) || !!epochData
+  const borrowEnabled = (ceilingSet && !isBlockedState) || !!epochData
 
   React.useEffect(() => {
     if (!borrowEnabled && borrowAmount === '') setBorrowAmount('0')

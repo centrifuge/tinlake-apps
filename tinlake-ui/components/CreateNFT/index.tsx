@@ -1,5 +1,5 @@
 import { baseToDisplay, displayToBase } from '@centrifuge/tinlake-js'
-import { Box, Button, FormField } from 'grommet'
+import { Box, Button, DateInput, FormField } from 'grommet'
 import { useRouter } from 'next/router'
 import * as React from 'react'
 import { useDispatch } from 'react-redux'
@@ -11,12 +11,14 @@ import NumberInput from '../NumberInput'
 import { useTinlake } from '../TinlakeProvider'
 
 const CreateNFT: React.FC = () => {
+  const DAYS = 24 * 60 * 60 * 1000
   const tinlake = useTinlake()
   const dispatch = useDispatch()
   const router = useRouter()
 
   const [value, setValue] = React.useState('')
   const [riskGroup, setRiskGroup] = React.useState('1')
+  const [maturityDate, setMaturityDate] = React.useState(new Date(Date.now() + 30 * DAYS).toISOString())
 
   const [txStatus, , setTxId, tx] = useTransactionState()
 
@@ -53,6 +55,7 @@ const CreateNFT: React.FC = () => {
         tinlake.contractAddresses.ASSET_NFT!,
         value,
         riskGroup,
+        tinlake.contractAddresses['LEGACY_ACTIONS'] ? Math.floor(new Date(maturityDate).getTime() / 1000) : 0,
       ])
     ) as any
 
@@ -76,7 +79,13 @@ const CreateNFT: React.FC = () => {
             </Box>
 
             <Grid columns={[1, 2]} equalColumns gap={100} maxWidth={700}>
-              <FormField label="NFT Value / Max draw down (in USD)">
+              <FormField
+                label={
+                  tinlake.contractAddresses['LEGACY_ACTIONS']
+                    ? 'Collateral Value'
+                    : 'NFT Value / Max draw down (in USD)'
+                }
+              >
                 <NumberInput
                   suffix=" USD"
                   value={baseToDisplay(value, 18)}
@@ -93,6 +102,19 @@ const CreateNFT: React.FC = () => {
                   disabled={isPending}
                 />
               </FormField>
+              {tinlake.contractAddresses['LEGACY_ACTIONS'] && (
+                <FormField label="Maturity Date">
+                  <DateInput
+                    format="mm/dd/yyyy"
+                    value={maturityDate}
+                    onChange={(event: any) => {
+                      console.log(event.value)
+                      setMaturityDate(event.value)
+                    }}
+                    disabled={isPending}
+                  />
+                </FormField>
+              )}
             </Grid>
           </>
         )}
