@@ -55,7 +55,7 @@ const CreateNFT: React.FC = () => {
         tinlake.contractAddresses.ASSET_NFT!,
         value,
         riskGroup,
-        Math.floor(new Date(maturityDate).getTime() / 1000),
+        tinlake.contractAddresses['LEGACY_ACTIONS'] ? Math.floor(new Date(maturityDate).getTime() / 1000) : 0,
       ])
     ) as any
 
