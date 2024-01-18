@@ -18,6 +18,7 @@ import { useCFGRewards } from '../../utils/useCFGRewards'
 import { usePool } from '../../utils/usePool'
 import { usePortfolio } from '../../utils/usePortfolio'
 import { ClientOnlyRender } from '../ClientOnlyRender'
+import { ExpiringCFGRewardsBanner } from '../ExpiringCFGRewardsBanner'
 import { ExploreCentrifugeBanner } from '../ExploreCentrifugeBanner'
 import { RewardsBanner } from '../RewardsBanner'
 import { useTinlake } from '../TinlakeProvider'
@@ -258,6 +259,11 @@ const Header: React.FC<Props> = (props: Props) => {
         </MobileNav>
       </HeaderBar>
       {!props.hideRewardsBanner && <RewardsBanner />}
+      <Box justify="center" direction="row">
+        <Box width="xlarge">
+          <ExpiringCFGRewardsBanner />
+        </Box>
+      </Box>
       <Box justify="center" direction="row">
         <Box width="xlarge">
           <ExploreCentrifugeBanner />
