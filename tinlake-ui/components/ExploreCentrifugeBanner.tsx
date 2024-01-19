@@ -2,7 +2,7 @@ import { Anchor, Box, Card, Paragraph } from 'grommet'
 
 export const ExploreCentrifugeBanner = () => (
   <Card
-    margin={{ top: 'medium' }}
+    margin={{ top: 'medium', bottom: 'xsmall' }}
     pad={{ top: 'xsmall', bottom: 'xsmall', left: 'medium', right: 'medium' }}
     style={{
       backgroundColor: '#cde5ff',
