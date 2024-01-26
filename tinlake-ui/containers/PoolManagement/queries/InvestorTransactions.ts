@@ -8,18 +8,20 @@ const tokenSymbolIsJunior = (symbol: string) => symbol.slice(symbol.length - 3) 
 
 export async function investorTransactions({ poolId }: { poolId: string; poolData: PoolData }) {
   const transactions = await getAllTransactions(poolId)
+  console.log('1')
   const transfers = await getAllTransfers(poolId)
+  console.log('2')
 
   const headers: { [key: string]: string } = {
     timestamp: 'Date',
     pool: 'Pool',
     owner: 'Account',
     type: 'Transaction Type',
-    symbol: 'Symbol',
+    token: 'Token',
     currencyAmount: 'Currency Amount',
     tokenAmount: 'Token Amount',
-    newBalance: 'Token Balance',
     currencyBalance: 'Currency Balance',
+    newBalance: 'Token Balance',
     tokenPrice: 'Token Price',
     transaction: 'Transaction Hash',
     gasPrice: 'Gas Price',
@@ -41,13 +43,15 @@ export async function investorTransactions({ poolId }: { poolId: string; poolDat
       el.symbol,
       el.currencyAmount / 10 ** 18,
       el.currencyAmount / 10 ** 18 / (el.tokenPrice / 10 ** 27),
-      el.newBalance / 10 ** 18,
       (el.newBalance / 10 ** 18) * (el.tokenPrice / 10 ** 27),
+      el.newBalance / 10 ** 18,
       el.tokenPrice / 10 ** 27,
       el.transaction,
       el.gasPrice / 10 ** 9,
       el.gasUsed,
-      calculateCostInUsd(el.gasPrice, el.gasUsed, el.timestamp),
+      el.type === 'INVEST_EXECUTION' || el.type === 'REDEEM_EXECUTION'
+        ? 0
+        : calculateCostInUsd(el.gasPrice, el.gasUsed, el.timestamp),
     ]),
     ...transfers.map((transfer: any) => [
       formatDate(transfer.timestamp),
@@ -63,6 +67,8 @@ export async function investorTransactions({ poolId }: { poolId: string; poolDat
         )
         .div(new BN(10).pow(new BN(27 + 18)))
         .toNumber(),
+      '-',
+      '-',
       '-',
       new BN(
         tokenSymbolIsJunior(transfer.token.symbol) ? transfer.pool.juniorTokenPrice : transfer.pool.seniorTokenPrice
@@ -89,6 +95,8 @@ export async function investorTransactions({ poolId }: { poolId: string; poolDat
         )
         .div(new BN(10).pow(new BN(27 + 18)))
         .toNumber(),
+      transfer.amount / 10 ** 18,
+      '-',
       '-',
       new BN(
         tokenSymbolIsJunior(transfer.token.symbol) ? transfer.pool.juniorTokenPrice : transfer.pool.seniorTokenPrice
