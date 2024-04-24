@@ -44,7 +44,7 @@ export function networkNameToId(name: string) {
 }
 
 export function networkUrlToName(url: string) {
-  if (url.indexOf('mainnet') > -1) return 'Mainnet'
+  if (url.indexOf('eth.') > -1) return 'Mainnet'
   if (url.indexOf('morden') > -1) return 'Morden'
   if (url.indexOf('ropsten') > -1) return 'Ropsten;'
   if (url.indexOf('rinkeby') > -1) return 'Rinkeby'

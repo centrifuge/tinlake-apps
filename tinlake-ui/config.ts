@@ -2,6 +2,7 @@ import contractAbiPoolRegistry from '@centrifuge/tinlake-js/src/abi/PoolRegistry
 import BN from 'bn.js'
 import { ethers } from 'ethers'
 import * as yup from 'yup'
+import { networkUrlToName } from './utils/networkNameResolver'
 
 interface SecuritizeData {
   issuerId: string
@@ -128,6 +129,7 @@ interface Config {
   transactionTimeout: number
   tinlakeDataBackendUrl: string
   isDemo: boolean
+  network: 'Mainnet' | 'Kovan' | 'Goerli'
   portisApiKey: string
   onfinalityKey: string
   gasLimit: number
@@ -347,6 +349,11 @@ const config: Config = {
     .url()
     .validateSync(process.env.NEXT_PUBLIC_TINLAKE_DATA_BACKEND_URL),
   isDemo: yup.string().required('NEXT_PUBLIC_ENV is required').validateSync(process.env.NEXT_PUBLIC_ENV) === 'demo',
+  network: yup
+    .mixed<'Mainnet' | 'Kovan' | 'Goerli'>()
+    .required('NEXT_PUBLIC_RPC_URL is required')
+    .oneOf(['Mainnet', 'Kovan', 'Goerli'])
+    .validateSync(networkUrlToName(process.env.NEXT_PUBLIC_RPC_URL || '')),
   portisApiKey: yup
     .string()
     .required('NEXT_PUBLIC_PORTIS_KEY is required')
