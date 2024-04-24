@@ -1,4 +1,4 @@
-import { default as init, default as Onboard } from '@web3-onboard/core'
+import { default as init } from '@web3-onboard/core'
 import injectedModule from '@web3-onboard/injected-wallets'
 import ledgerModule from '@web3-onboard/ledger'
 import portisModule from '@web3-onboard/portis'
@@ -29,13 +29,13 @@ export async function initOnboard(): Promise<Onboard> {
         id: '1',
         token: 'ETH',
         label: 'Ethereum Mainnet',
-        rpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+        rpcUrl: `https://eth.api.onfinality.io/rpc?apikey=${process.env.NEXT_PUBLIC_ONFINALITY_KEY}`,
       },
       {
         id: '5',
         token: 'goerliETH',
         label: 'Ethereum Goerli Testnet',
-        rpcUrl: `https://goerli.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_KEY}`,
+        rpcUrl: `https://eth-goerli.api.onfinality.io/rpc?apikey=${process.env.NEXT_PUBLIC_ONFINALITY_KEY}`,
       },
     ],
     appMetadata: {

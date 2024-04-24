@@ -53,7 +53,7 @@ jobs:
           NEXT_PUBLIC_ENV: 'demo'
           NEXT_PUBLIC_ETHERSCAN_URL: 'https://goerli.etherscan.io'
           NEXT_PUBLIC_FEATURE_FLAG_NEW_ONBOARDING: '0x5ca22a7cD0911c0b8279faEC3F3273AE94692E34,0xdA709C17ac67fA92d6cF6E92370809694fa9714a'
-          NEXT_PUBLIC_INFURA_KEY: ${{ secrets.NEXT_PUBLIC_INFURA_KEY }}
+          NEXT_PUBLIC_ONFINALITY_KEY: 0e1c049f-d876-4e77-a45f-b5afdf5739b2
           NEXT_PUBLIC_IPFS_GATEWAY: 'https://cloudflare-ipfs.com/ipfs/'
           NEXT_PUBLIC_MULTICALL_CONTRACT_ADDRESS: '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696'
           NEXT_PUBLIC_ONBOARD_API_HOST: 'https://onboard-api.catalyst.cntrfg.com/'
@@ -63,7 +63,7 @@ jobs:
           NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE: 'QmdUg4VgLQg6uDBHxPjiMXoawgPM3LpBzuZr3ejCQTkuet'
           NEXT_PUBLIC_PORTIS_KEY: 'bc9e2922-2ebd-4e2b-86f6-7c7855bdf07f'
           NEXT_PUBLIC_REWARDS_TREE_URL: 'https://storage.googleapis.com/rad-rewards-trees-kovan-staging/latest.json'
-          NEXT_PUBLIC_RPC_URL: 'https://goerli.infura.io/v3/f9ba987e8cb34418bb53cdbd4d8321b5'
+          NEXT_PUBLIC_RPC_URL: 'https://eth-goerli.api.onfinality.io/rpc?apikey=0e1c049f-d876-4e77-a45f-b5afdf5739b2'
           NEXT_PUBLIC_TINLAKE_DATA_BACKEND_URL: 'https://api.thegraph.com/subgraphs/name/offerijns/tinlake-goerli'
           NEXT_PUBLIC_TRANSACTION_TIMEOUT: '3600'
 
@@ -129,7 +129,7 @@ jobs:
           NEXT_PUBLIC_ENV: 'PROD'
           NEXT_PUBLIC_ETHERSCAN_URL: 'https://etherscan.io'
           NEXT_PUBLIC_FEATURE_FLAG_NEW_ONBOARDING: '0x4B6CA198d257D755A5275648D471FE09931b764A,0xdB3bC9fB1893222d266762e9fF857EB74D75c7D6,0xfc2950dD337ca8496C18dfc0256Fb905A7E7E5c6,0x53b2d22d07E069a3b132BfeaaD275b10273d381E,0x0CED6166873038Ac0cc688e7E6d19E2cBE251Bf0,0x4cA805cE8EcE2E63FfC1F9f8F2731D3F48DF89Df,0x82B8617A16e388256617FeBBa1826093401a3fE5,0x560Ac248ce28972083B718778EEb0dbC2DE55740,0x3d167bd08f762FD391694c67B5e6aF0868c45538,0x3B03863BD553C4CE07eABF2278016533451c9101,0x09e43329552c9D81cF205Fd5f44796fBC40c822e,0xF96F18F2c70b57Ec864cC0C8b828450b82Ff63e3,0xd8486C565098360A24f858088a6D29a380dDF7ec'
-          NEXT_PUBLIC_INFURA_KEY: ${{ secrets.NEXT_PUBLIC_INFURA_KEY }}
+          NEXT_PUBLIC_ONFINALITY_KEY: 84bb59f4-05cc-440b-8fd4-7917623a90c6
           NEXT_PUBLIC_IPFS_GATEWAY: 'https://cloudflare-ipfs.com/ipfs/'
           NEXT_PUBLIC_MULTICALL_CONTRACT_ADDRESS: '0xeefba1e63905ef1d7acba5a8513c70307c1ce441'
           NEXT_PUBLIC_ONBOARD_API_HOST: 'https://onboard-api.centrifuge.io/'
@@ -139,7 +139,7 @@ jobs:
           NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE: 'QmddkTgX879eV9shYZ6R8MMKM6jjXS7RzpuBNrRt8anC7t'
           NEXT_PUBLIC_PORTIS_KEY: 'bc9e2922-2ebd-4e2b-86f6-7c7855bdf07f'
           NEXT_PUBLIC_REWARDS_TREE_URL: 'https://storage.googleapis.com/rad-rewards-trees-mainnet-production/latest.json'
-          NEXT_PUBLIC_RPC_URL: 'https://mainnet.infura.io/v3/ed5e0e19bcbc427cbf8f661736d44516'
+          NEXT_PUBLIC_RPC_URL: 'https://eth.api.onfinality.io/rpc?apikey=84bb59f4-05cc-440b-8fd4-7917623a90c6'
           NEXT_PUBLIC_TINLAKE_DATA_BACKEND_URL: 'https://api.goldsky.com/api/public/project_clhi43ef5g4rw49zwftsvd2ks/subgraphs/main/prod/gn'
           NEXT_PUBLIC_TRANSACTION_TIMEOUT: '3600'
 
