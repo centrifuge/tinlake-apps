@@ -8,7 +8,7 @@
     "fs": false
   },
   "scripts": {
-    "build": "yarn build:deps && yarn build:onboarding-ui && yarn build:next && yarn build:lambda",
+    "build": "yarn build:deps && yarn build:onboarding-ui && yarn build:next",
     "build-for-husky": "tsc",
     "dev:next": "PORT=3000 node server.js",
     "build:next": "next build --debug",
