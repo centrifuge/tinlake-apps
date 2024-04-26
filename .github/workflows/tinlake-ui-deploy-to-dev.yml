@@ -76,7 +76,6 @@ jobs:
         with:
           deploy-message: ${{ github.event.head_commit.message }}
           enable-commit-comment: false
-          functions-dir: ./tinlake-ui/functions
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-config-path: ./tinlake-ui/netlify.toml
           production-deploy: true
@@ -140,7 +139,7 @@ jobs:
           NEXT_PUBLIC_RWA_MARKET_ONBOARD_RETURN_URL: 'https://rwamarket.io'
           NEXT_PUBLIC_POOL_REGISTRY: '0xddf1c516cf87126c6c610b52fd8d609e67fb6033'
           NEXT_PUBLIC_POOLS_CONFIG: 'mainnetProduction'
-          NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE: 'QmddkTgX879eV9shYZ6R8MMKM6jjXS7RzpuBNrRt8anC7t'
+          NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE: 'QmaMA1VYSKuuYhBcQCyf5Ek4VoiiEG6oLGp3iGbsQPGpkS'
           NEXT_PUBLIC_PORTIS_KEY: 'bc9e2922-2ebd-4e2b-86f6-7c7855bdf07f'
           NEXT_PUBLIC_REWARDS_TREE_URL: 'https://storage.googleapis.com/rad-rewards-trees-mainnet-production/latest.json'
           NEXT_PUBLIC_RPC_URL: 'https://eth.api.onfinality.io/rpc?apikey=84bb59f4-05cc-440b-8fd4-7917623a90c6'
@@ -152,7 +151,6 @@ jobs:
         with:
           deploy-message: ${{ github.event.head_commit.message }}
           enable-commit-comment: false
-          functions-dir: ./tinlake-ui/functions
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-config-path: ./tinlake-ui/netlify.toml
           production-deploy: true

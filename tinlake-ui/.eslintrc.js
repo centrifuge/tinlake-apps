@@ -1,7 +1,7 @@
 const tsconfigJson = require('./tsconfig.json')
 
 module.exports = {
-  ignorePatterns: ['node_modules', 'build', '.env', 'out', 'functions', ...(tsconfigJson.exclude || [])],
+  ignorePatterns: ['node_modules', 'build', '.env', 'out', ...(tsconfigJson.exclude || [])],
   extends: ['../.eslintrc.js', 'react-app', 'react-app/jest', 'plugin:react/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
