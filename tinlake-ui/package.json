@@ -8,21 +8,18 @@
     "fs": false
   },
   "scripts": {
-    "build": "yarn build:deps && yarn build:onboarding-ui && yarn build:next && yarn build:lambda",
-    "build-for-husky": "tsc",
-    "dev:next": "PORT=3000 node server.js",
-    "build:next": "next build --debug",
-    "start": "yarn build:deps && yarn build:onboarding-ui && run-p -l dev:next dev:lambda",
+    "build": "yarn build:tinlakejs && yarn build:onboarding-ui && yarn build:next",
+    "build:tinlakejs": "cd ../tinlake.js && yarn build && cd ../tinlake-ui",
     "build:onboarding-ui": " cd ../onboarding-ui && yarn build && cd ../tinlake-ui",
+    "build:next": "next build --debug",
+    "start": "yarn build:deps && yarn build:onboarding-ui",
+    "build-for-husky": "tsc",
     "serve": "next start",
     "test": "jest",
     "export": "yarn build && next export && yarn build:redirects",
     "lint": "eslint -c .eslintrc.js '*/**/*.{js,ts,tsx}'",
     "lint-fix": "eslint -c .eslintrc.js '*/**/*.{js,ts,tsx}' --fix",
     "lint-fix-staged": "git diff --staged --name-only | grep -E '\\.tsx?$' | xargs yarn lint-fix && git diff --staged --name-only | grep -E '\\.tsx?$' | xargs git add",
-    "dev:lambda": "netlify-lambda serve lambda",
-    "build:lambda": "netlify-lambda build lambda",
-    "build:deps": "cd ../tinlake.js && yarn build && cd ../tinlake-ui",
     "build:redirects": "ts-node ./scripts/generateRedirects.ts"
   },
   "repository": {
@@ -102,7 +99,6 @@
   "devDependencies": {
     "@babel/plugin-transform-runtime": "7.10.5",
     "@babel/preset-typescript": "7.10.4",
-    "@types/aws-lambda": "8.10.59",
     "@types/bn.js": "4.11.6",
     "@types/jest": "24.9.1",
     "@types/jsonp": "^0.2.0",
@@ -131,7 +127,6 @@
     "http-proxy-middleware": "1.0.5",
     "husky": "4.2.5",
     "jest": "26.6.0",
-    "netlify-lambda": "2.0.1",
     "npm-run-all": "4.1.5",
     "react-test-renderer": "16.13.1",
     "ts-jest": "^26.4.3",

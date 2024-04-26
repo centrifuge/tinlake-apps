@@ -2,5 +2,4 @@
   base = "tinlake-ui"
   command = "yarn export"
   publish = "out"
-  functions = "functions"
   environment = { NETLIFY_USE_YARN = "true" }
