@@ -12,7 +12,7 @@
     "build:tinlakejs": "cd ../tinlake.js && yarn build && cd ../tinlake-ui",
     "build:onboarding-ui": " cd ../onboarding-ui && yarn build && cd ../tinlake-ui",
     "build:next": "next build --debug",
-    "start": "yarn build:deps && yarn build:onboarding-ui",
+    "start": "yarn build:deps && yarn build:onboarding-ui && PORT=3000 node server.js",
     "build-for-husky": "tsc",
     "serve": "next start",
     "test": "jest",
