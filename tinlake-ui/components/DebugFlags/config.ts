@@ -269,7 +269,7 @@ export const flagsConfig = {
   },
   showArchived: {
     type: 'checkbox',
-    default: params.get('showArchived') != null,
+    default: true,
   },
   showRewardsInfo: {
     type: 'checkbox',
