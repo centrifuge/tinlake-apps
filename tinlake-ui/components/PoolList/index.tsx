@@ -185,7 +185,7 @@ const PoolList: React.FC<Props> = ({ poolsData }) => {
         <RwaMarketRow isMobile={isMobile as boolean} interactive as="a" target="_blank" />
       </Link>
       {pools?.map((p, i) => (
-        <Link href={p.isArchived ? `/pool/${p.slug}` : `/pool/${p.id}/${p.slug}`} shallow passHref key={`${p.id}-${i}`}>
+        <Link href={`/pool/${p.id}/${p.slug}`} shallow passHref key={`${p.id}-${i}`}>
           <Row
             row={p}
             columns={dataColumns}
