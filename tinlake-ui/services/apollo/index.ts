@@ -292,43 +292,39 @@ class Apollo {
 
   async getLoans(root: string) {
     const result = await this.client.query({
-      query: gql`
-        {
-          pools(where: { id_in: ["${root.toLowerCase()}"]}) {
-            loans (first: 1000) {
-              id
-              pool {
-                id
-              }
-              index
-              owner
-              opened
-              closed
-              debt
-              interestRatePerSecond
-              ceiling
-              threshold
-              borrowsCount
-              borrowsAggregatedAmount
-              repaysCount
-              repaysAggregatedAmount
-              nftId
-              nftRegistry
-              maturityDate
-              financingDate
-              riskGroup
-            }
+      query: gql`   
+       {
+        loans(
+          where: {pool_: {id: "${root.toLowerCase()}"}}
+          first: 1000
+        ) {
+          id
+          pool {
+            id
           }
+          index
+          owner
+          opened
+          closed
+          debt
+          interestRatePerSecond
+          ceiling
+          threshold
+          borrowsCount
+          borrowsAggregatedAmount
+          repaysCount
+          repaysAggregatedAmount
+          nftId
+          nftRegistry
+          maturityDate
+          financingDate
+          riskGroup
         }
+      }
         `,
     })
 
-    const loans = result.data.pools.reduce((assets: any[], pool: any) => {
-      if (pool.loans) {
-        assets.push(...pool.loans)
-      }
-      return assets
-    }, [])
+    const loans = result.data.loans
 
     if (!loans) return { data: [] }
 
