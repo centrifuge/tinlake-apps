@@ -29,13 +29,13 @@ export async function initOnboard(): Promise<Onboard> {
         id: '1',
         token: 'ETH',
         label: 'Ethereum Mainnet',
-        rpcUrl: `https://eth.api.onfinality.io/rpc?apikey=${process.env.NEXT_PUBLIC_ONFINALITY_KEY}`,
+        rpcUrl: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`,
       },
       {
         id: '5',
         token: 'goerliETH',
         label: 'Ethereum Goerli Testnet',
-        rpcUrl: `https://eth-goerli.api.onfinality.io/rpc?apikey=${process.env.NEXT_PUBLIC_ONFINALITY_KEY}`,
+        rpcUrl: `https://eth-goerli.api.onfinality.io/rpc?apikey=${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`,
       },
     ],
     appMetadata: {

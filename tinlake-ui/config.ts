@@ -131,7 +131,7 @@ interface Config {
   isDemo: boolean
   network: 'Mainnet' | 'Kovan' | 'Goerli'
   portisApiKey: string
-  onfinalityKey: string
+  alchemyKey: string
   gasLimit: number
   onboardAPIHost: string
   featureFlagNewOnboardingPools: string[]
@@ -352,16 +352,16 @@ const config: Config = {
   network: yup
     .mixed<'Mainnet' | 'Kovan' | 'Goerli'>()
     .required('NEXT_PUBLIC_RPC_URL is required')
-    .oneOf(['Mainnet', 'Kovan', 'Goerli'])
+    // .oneOf(['Mainnet', 'Kovan', 'Goerli'])
     .validateSync(networkUrlToName(process.env.NEXT_PUBLIC_RPC_URL || '')),
   portisApiKey: yup
     .string()
     .required('NEXT_PUBLIC_PORTIS_KEY is required')
     .validateSync(process.env.NEXT_PUBLIC_PORTIS_KEY),
-  onfinalityKey: yup
+  alchemyKey: yup
     .string()
-    .required('NEXT_PUBLIC_ONFINALITY_KEY is required')
-    .validateSync(process.env.NEXT_PUBLIC_ONFINALITY_KEY),
+    .required('NEXT_PUBLIC_ALCHEMY_KEY is required')
+    .validateSync(process.env.NEXT_PUBLIC_ALCHEMY_KEY),
   gasLimit: yup.number().required('gasLimit is required').validateSync('7000000'),
   onboardAPIHost: yup
     .string()
