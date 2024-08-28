@@ -7,13 +7,12 @@ on:
       - '.github/workflows/tinlake-ui-pull-request.yml'
 
 jobs:
-  build-and-deploy-to-goerli:
+  build:
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: tinlake-ui
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -38,81 +37,8 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Cache Next.js Bundle
-        uses: actions/cache@v2
-        with:
-          path: ${{ github.workspace }}/tinlake-ui/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Lint
-        run: yarn lint
-
-      - name: Build
-        run: yarn export
-        env:
-          NEXT_PUBLIC_CENTRIFUGE_CHAIN_URL: 'wss://fullnode.catalyst.cntrfg.com'
-          NEXT_PUBLIC_CLAIM_CFG_CONTRACT_ADDRESS: '0x297237e17F327f8e5C8dEd78b15761A7D513353b'
-          NEXT_PUBLIC_ENV: 'demo'
-          NEXT_PUBLIC_ETHERSCAN_URL: 'https://goerli.etherscan.io'
-          NEXT_PUBLIC_FEATURE_FLAG_NEW_ONBOARDING: '0x5ca22a7cD0911c0b8279faEC3F3273AE94692E34,0xdA709C17ac67fA92d6cF6E92370809694fa9714a'
-          NEXT_PUBLIC_ONFINALITY_KEY: 0e1c049f-d876-4e77-a45f-b5afdf5739b2
-          NEXT_PUBLIC_IPFS_GATEWAY: 'https://cloudflare-ipfs.com/ipfs/'
-          NEXT_PUBLIC_MULTICALL_CONTRACT_ADDRESS: '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696'
-          NEXT_PUBLIC_ONBOARD_API_HOST: 'https://onboard-api.catalyst.cntrfg.com/'
-          NEXT_PUBLIC_RWA_MARKET_ONBOARD_RETURN_URL: 'https://dev.rwamarket.io'
-          NEXT_PUBLIC_POOL_REGISTRY: '0x46A01532De22Baa1DFDB58b5bB62845667146E5c'
-          NEXT_PUBLIC_POOLS_CONFIG: 'goerliStaging'
-          NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE: 'QmdUg4VgLQg6uDBHxPjiMXoawgPM3LpBzuZr3ejCQTkuet'
-          NEXT_PUBLIC_PORTIS_KEY: 'bc9e2922-2ebd-4e2b-86f6-7c7855bdf07f'
-          NEXT_PUBLIC_REWARDS_TREE_URL: 'https://storage.googleapis.com/rad-rewards-trees-kovan-staging/latest.json'
-          NEXT_PUBLIC_RPC_URL: 'https://eth-goerli.api.onfinality.io/rpc?apikey=0e1c049f-d876-4e77-a45f-b5afdf5739b2'
-          NEXT_PUBLIC_TINLAKE_DATA_BACKEND_URL: 'https://api.thegraph.com/subgraphs/name/offerijns/tinlake-goerli'
-          NEXT_PUBLIC_TRANSACTION_TIMEOUT: '3600'
-
-      - name: Deploy To Netlify
-        uses: nwtgck/actions-netlify@v1.2.4
-        with:
-          alias: pr-${{ github.event.pull_request.number }}
-          deploy-message: ${{ github.event.commit.message }}
-          enable-pull-request-comment: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          netlify-config-path: ./tinlake-ui/netlify.toml
-          publish-dir: ./tinlake-ui/out
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN  }}
-          NETLIFY_SITE_ID: ${{ secrets.TINLAKE_UI_GOERLI_DEV_NETLIFY_SITE_ID }}
-
-  build-and-deploy-to-mainnet:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: tinlake-ui
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '12'
-
-      - name: Get Yarn Cache Directory Path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-
-      - name: Cache Yarn Dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install Dependencies
-        run: yarn install
-
+      - run: yarn format:check
+      
       - name: Cache Next.js Bundle
         uses: actions/cache@v2
         with:
@@ -143,16 +69,3 @@ jobs:
           NEXT_PUBLIC_RPC_URL: 'https://eth-mainnet.g.alchemy.com/v2/lobQdgMiovZ4jK7rj8sFco32GKUeqUBi'
           NEXT_PUBLIC_TINLAKE_DATA_BACKEND_URL: 'https://api.goldsky.com/api/public/project_clhi43ef5g4rw49zwftsvd2ks/subgraphs/main/prod/gn'
           NEXT_PUBLIC_TRANSACTION_TIMEOUT: '3600'
-
-      - name: Deploy To Netlify
-        uses: nwtgck/actions-netlify@v1.2.4
-        with:
-          alias: pr-${{ github.event.pull_request.number }}
-          deploy-message: ${{ github.event.commit.message }}
-          enable-pull-request-comment: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          netlify-config-path: ./tinlake-ui/netlify.toml
-          publish-dir: ./tinlake-ui/out
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN  }}
-          NETLIFY_SITE_ID: ${{ secrets.TINLAKE_UI_MAINNET_DEV_NETLIFY_SITE_ID }}
