@@ -277,15 +277,37 @@ const archivedPoolsSchema = yup.array(archivedPoolSchema)
 
 export let ipfsPools: IpfsPools | undefined = undefined
 
+const getValidatedEnvVars = () => {
+  const rpcUrl = yup
+    .string()
+    .required('NEXT_PUBLIC_RPC_URL is required')
+    .url()
+    .validateSync(process.env.NEXT_PUBLIC_RPC_URL)
+
+  const ipfsGateway = yup
+    .string()
+    .required('NEXT_PUBLIC_IPFS_GATEWAY is required')
+    .url()
+    .validateSync(process.env.NEXT_PUBLIC_IPFS_GATEWAY)
+
+  const poolRegistry = yup
+    .string()
+    .required('NEXT_PUBLIC_POOL_REGISTRY is required')
+    .validateSync(process.env.NEXT_PUBLIC_POOL_REGISTRY)
+
+  return { rpcUrl, ipfsGateway, poolRegistry }
+}
+
 // TODO: temp for now until we figure out a better way to handle not having an instance of Tinlake
 const assembleIpfsUrl = async (): Promise<string> => {
-  const provider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
+  const { rpcUrl, ipfsGateway, poolRegistry } = getValidatedEnvVars()
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
   let url: URL
   if (process.env.NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE) {
-    url = new URL(process.env.NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE, config.ipfsGateway)
+    url = new URL(process.env.NEXT_PUBLIC_POOLS_IPFS_HASH_OVERRIDE, ipfsGateway)
     return url.href
   }
-  const registry = new ethers.Contract(config.poolRegistry, contractAbiPoolRegistry, provider)
+  const registry = new ethers.Contract(poolRegistry, contractAbiPoolRegistry, provider)
   const poolData = await registry.pools(0)
   url = new URL(poolData[3], config.ipfsGateway)
   return url.href
@@ -296,9 +318,15 @@ export const loadPoolsFromIPFS = async () => {
     return ipfsPools
   }
   const url = await assembleIpfsUrl()
-  const response = await fetch(url)
-  const body = await response.json()
-  const networkConfigs: any[] = Object.values(body)
+  let networkConfigs: any[] = []
+  try {
+    const response = await fetch(url)
+    const body = await response.json()
+    networkConfigs = Object.values(body)
+  } catch (error) {
+    console.error('Error fetching pools from IPFS:', error)
+    throw error
+  }
 
   const launching = upcomingPoolsSchema
     .validateSync(networkConfigs.filter((p: Pool) => !p.metadata.isLaunching))
@@ -351,8 +379,8 @@ const config: Config = {
   isDemo: yup.string().required('NEXT_PUBLIC_ENV is required').validateSync(process.env.NEXT_PUBLIC_ENV) === 'demo',
   network: yup
     .mixed<'Mainnet' | 'Kovan' | 'Goerli'>()
+    .oneOf(['Mainnet', 'Kovan', 'Goerli'])
     .required('NEXT_PUBLIC_RPC_URL is required')
-    // .oneOf(['Mainnet', 'Kovan', 'Goerli'])
     .validateSync(networkUrlToName(process.env.NEXT_PUBLIC_RPC_URL || '')),
   portisApiKey: yup
     .string()

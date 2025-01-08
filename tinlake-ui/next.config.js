@@ -1,5 +1,14 @@
 require('dotenv').config()
-require('ts-node').register({ project: './tsconfig.json', compilerOptions: { module: 'CommonJS' }, files: true })
+require('@swc/register')({
+  module: { type: 'commonjs' },
+  jsc: {
+    parser: {
+      syntax: 'typescript',
+      tsx: true,
+    },
+    target: 'es2017',
+  },
+})
 const withTM = require('next-transpile-modules')([
   '@web3-onboard/injected-wallets',
   '@web3-onboard/core',
@@ -12,7 +21,8 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
   webpack(config) {
-    // Further custom configuration here
+    config.devtool = false
+
     return {
       ...config,
       module: {
