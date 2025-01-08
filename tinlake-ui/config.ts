@@ -318,15 +318,9 @@ export const loadPoolsFromIPFS = async () => {
     return ipfsPools
   }
   const url = await assembleIpfsUrl()
-  let networkConfigs: any[] = []
-  try {
-    const response = await fetch(url)
-    const body = await response.json()
-    networkConfigs = Object.values(body)
-  } catch (error) {
-    console.error('Error fetching pools from IPFS:', error)
-    throw error
-  }
+  const response = await fetch(url)
+  const body = await response.json()
+  const networkConfigs: any = Object.values(body)
 
   const launching = upcomingPoolsSchema
     .validateSync(networkConfigs.filter((p: Pool) => !p.metadata.isLaunching))
