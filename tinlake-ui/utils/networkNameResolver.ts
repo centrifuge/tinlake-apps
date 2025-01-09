@@ -52,5 +52,5 @@ export function networkUrlToName(url: string) {
   if (url.indexOf('kovan') > -1) return 'Kovan'
   if (url.indexOf('xDai') > -1) return 'XDai'
   if (url.indexOf('localhost') > -1) return 'Local'
-  return null
+  return 'Mainnet'
 }
